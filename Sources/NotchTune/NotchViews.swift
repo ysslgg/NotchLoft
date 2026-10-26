@@ -24,7 +24,7 @@ struct NotchRootView: View {
 
     var body: some View {
         let g = ui.geometry
-        let show = model.hasTrack
+        let show = model.isShown
         let size: CGSize = show
             ? (ui.expanded ? NotchGeometry.expandedSize : g.compactSize)
             : CGSize(width: g.notchWidth, height: g.notchHeight)
@@ -76,9 +76,21 @@ private struct CompactContent: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            ArtworkView(image: model.artwork, size: 20, radius: 5, accent: model.accent, halo: 0)
-                .opacity(model.isPlaying ? 1 : 0.55)
-                .padding(.leading, 9)
+            ZStack {
+                // Bague de progression discrète autour de la pochette
+                RoundedRectangle(cornerRadius: 7.5, style: .continuous)
+                    .stroke(.white.opacity(0.14), lineWidth: 1.5)
+                RoundedRectangle(cornerRadius: 7.5, style: .continuous)
+                    .trim(from: 0, to: model.duration > 0 ? min(1, model.position / model.duration) : 0)
+                    .stroke(model.accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    .rotationEffect(.degrees(0))
+                    .animation(.linear(duration: 0.25), value: model.position)
+                ArtworkView(image: model.artwork, size: 18, radius: 4.5, accent: model.accent,
+                            halo: model.isPlaying ? 0.45 : 0)
+                    .opacity(model.isPlaying ? 1 : 0.55)
+            }
+            .frame(width: 24, height: 24)
+            .padding(.leading, 7)
             Spacer(minLength: 0)
             ZStack {
                 VisualizerBars(color: model.accent, playing: model.isPlaying)
@@ -129,6 +141,9 @@ private struct ExpandedContent: View {
                 .id(model.title + "\u{1}" + model.artist)
                 .transition(.opacity.combined(with: .offset(y: 5)))
                 .frame(height: 38)
+                if let icon = model.sourceIcon {
+                    SourceButton(icon: icon) { model.openSourceApp() }
+                }
             }
             .animation(.easeOut(duration: 0.28), value: model.title)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -379,5 +394,26 @@ struct VisualizerBars: View {
             }
             .shadow(color: color.opacity(0.6), radius: 3)
         }
+    }
+}
+
+/// Icône de l'app qui joue ; un clic l'ouvre.
+private struct SourceButton: View {
+    let icon: NSImage
+    let action: () -> Void
+    @StateObject private var hover = HoverBox()
+
+    var body: some View {
+        Button(action: action) {
+            Image(nsImage: icon)
+                .resizable()
+                .frame(width: 20, height: 20)
+                .opacity(hover.on ? 1 : 0.65)
+                .scaleEffect(hover.on ? 1.12 : 1)
+        }
+        .buttonStyle(PressStyle())
+        .onHover { hover.on = $0 }
+        .animation(.easeOut(duration: 0.15), value: hover.on)
+        .help("Ouvrir l'app")
     }
 }

@@ -13,6 +13,7 @@ struct TrackSnapshot {
     var rate: Double
     var artwork: NSImage?
     var accent: NSColor
+    var bundleID: String?
 }
 
 /// Lance `perl mediaremote-adapter.pl <framework> stream` et expose les mises à jour.
@@ -136,7 +137,8 @@ final class NowPlayingService: @unchecked Sendable {
             timestamp: ts,
             rate: rate > 0 ? rate : 1,
             artwork: artwork,
-            accent: accent
+            accent: accent,
+            bundleID: payload["bundleIdentifier"] as? String
         )
         DispatchQueue.main.async { self.onUpdate?(snap) }
     }

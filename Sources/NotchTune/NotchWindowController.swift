@@ -89,7 +89,7 @@ final class NotchWindowController {
     }
 
     private func mouseChanged() {
-        guard model.hasTrack else {
+        guard model.isShown else {
             if ui.expanded { schedule(open: false, delay: 0.24) } else { cancelPending() }
             return
         }
@@ -127,5 +127,8 @@ final class NotchWindowController {
         ui.expanded = value
         panel.ignoresMouseEvents = !value
         model.tracksPosition = value
+        if value {
+            NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
+        }
     }
 }

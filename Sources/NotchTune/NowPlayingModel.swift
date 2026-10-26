@@ -5,6 +5,9 @@ import SwiftUI
 @MainActor
 final class NowPlayingModel: ObservableObject {
     @Published private(set) var hasTrack = false
+    /// Faux après une longue pause : l'encoche retourne au repos complet.
+    @Published private(set) var isShown = false
+    @Published private(set) var sourceIcon: NSImage?
     @Published private(set) var title = ""
     @Published private(set) var artist = ""
     @Published private(set) var isPlaying = false
@@ -17,12 +20,17 @@ final class NowPlayingModel: ObservableObject {
 
     private var base: TrackSnapshot?
     private var timer: Timer?
+    private var idleWork: DispatchWorkItem?
+    private var sourceBundle: String?
+    private var pauseArmed = false
+    private static let idleDelay: TimeInterval = 45
 
     /// Le timer ne tourne que lorsque la position est affichée.
     var tracksPosition = false {
         didSet {
             guard tracksPosition != oldValue else { return }
-            tracksPosition ? startTimer() : stopTimer()
+            stopTimer()
+            startTimer()
         }
     }
 
@@ -32,7 +40,10 @@ final class NowPlayingModel: ObservableObject {
         }
     }
 
-    func start() { service.start() }
+    func start() {
+        startTimer()
+        service.start()
+    }
     func stop() { service.stop() }
 
     private func apply(_ snap: TrackSnapshot?) {
@@ -40,6 +51,7 @@ final class NowPlayingModel: ObservableObject {
         guard let s = snap else {
             hasTrack = false
             isPlaying = false
+            updateShown()
             return
         }
         if title != s.title { title = s.title }
@@ -50,6 +62,44 @@ final class NowPlayingModel: ObservableObject {
         accent = Color(nsColor: s.accent)
         position = computePosition()
         if !hasTrack { hasTrack = true }
+        if sourceBundle != s.bundleID {
+            sourceBundle = s.bundleID
+            sourceIcon = s.bundleID.flatMap { id in
+                NSWorkspace.shared.urlForApplication(withBundleIdentifier: id)
+                    .map { NSWorkspace.shared.icon(forFile: $0.path) }
+            }
+        }
+        updateShown()
+    }
+
+    /// Masque l'encoche après `idleDelay` secondes de pause, la réaffiche dès que ça rejoue.
+    private func updateShown() {
+        guard hasTrack else {
+            idleWork?.cancel(); idleWork = nil
+            pauseArmed = false
+            isShown = false
+            return
+        }
+        if isPlaying {
+            idleWork?.cancel(); idleWork = nil
+            pauseArmed = false
+            isShown = true
+        } else if !pauseArmed {
+            // Premier état « en pause » : visible, puis masqué après le délai.
+            pauseArmed = true
+            isShown = true
+            let work = DispatchWorkItem { [weak self] in
+                MainActor.assumeIsolated { self?.isShown = false }
+            }
+            idleWork = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.idleDelay, execute: work)
+        }
+    }
+
+    func openSourceApp() {
+        guard let id = sourceBundle,
+              let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: id) else { return }
+        NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
     }
 
     private func computePosition() -> Double {
@@ -61,7 +111,8 @@ final class NowPlayingModel: ObservableObject {
 
     private func startTimer() {
         position = computePosition()
-        let t = Timer(timeInterval: 0.1, repeats: true) { [weak self] _ in
+        // Rapide quand la position est affichée en grand, lent pour la bague du mode compact.
+        let t = Timer(timeInterval: tracksPosition ? 0.1 : 0.25, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self, self.base?.playing == true else { return }
                 self.position = self.computePosition()
