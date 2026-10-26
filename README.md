@@ -16,7 +16,7 @@ macOS 14+ · Apple Silicon et Intel
 - **Mode compact** : l'encoche s'élargit légèrement, avec la pochette à gauche et un visualiseur animé à droite (un symbole pause s'affiche quand la lecture est en pause). Rien ne s'affiche si rien ne joue.
 - **Mode survol** : l'encoche s'agrandit avec la pochette, le titre, l'artiste, une barre de progression cliquable et glissable, le temps écoulé / total et les boutons précédent, lecture / pause, suivant.
 - Couleur d'accent extraite de la pochette (barres, progression, halo, léger dégradé de fond).
-- Aucune icône dans le Dock : une icône ♪ dans la barre des menus, avec « Quitter ».
+- Aucune icône dans le Dock : une icône ♪ dans la barre des menus, avec les réglages (visualiseur, bague de progression, fond flou, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage) et « Quitter ».
 - Fonctionne aussi sur un Mac sans encoche (encoche simulée).
 
 ## Installation

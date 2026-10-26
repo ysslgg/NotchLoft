@@ -78,6 +78,7 @@ private struct CompactContent: View {
         HStack(spacing: 0) {
             ZStack {
                 // Bague de progression discrète autour de la pochette
+                if Settings.shared.showProgressRing {
                 RoundedRectangle(cornerRadius: 7.5, style: .continuous)
                     .stroke(.white.opacity(0.14), lineWidth: 1.5)
                 RoundedRectangle(cornerRadius: 7.5, style: .continuous)
@@ -85,6 +86,7 @@ private struct CompactContent: View {
                     .stroke(model.accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                     .rotationEffect(.degrees(0))
                     .animation(.linear(duration: 0.25), value: model.position)
+                }
                 ArtworkView(image: model.artwork, size: 18, radius: 4.5, accent: model.accent,
                             halo: model.isPlaying ? 0.45 : 0)
                     .opacity(model.isPlaying ? 1 : 0.55)
@@ -93,8 +95,8 @@ private struct CompactContent: View {
             .padding(.leading, 12)
             Spacer(minLength: 0)
             ZStack {
-                VisualizerBars(color: model.accent, playing: model.isPlaying)
-                    .opacity(model.isPlaying ? 1 : 0)
+                VisualizerBars(color: model.accent, playing: model.isPlaying && Settings.shared.showVisualizer)
+                    .opacity(model.isPlaying && Settings.shared.showVisualizer ? 1 : 0)
                     .scaleEffect(model.isPlaying ? 1 : 0.6)
                 Image(systemName: "pause.fill")
                     .font(.system(size: 11, weight: .heavy))
@@ -183,7 +185,7 @@ private struct ExpandedContent: View {
         .padding(.horizontal, 30)
         .background(alignment: .top) {
             // Fond flou tiré de la pochette
-            if let img = model.artwork {
+            if let img = model.artwork, Settings.shared.blurBackdrop {
                 Image(nsImage: img)
                     .resizable().aspectRatio(contentMode: .fill)
                     .frame(width: 330, height: 160)

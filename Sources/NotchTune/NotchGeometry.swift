@@ -5,13 +5,14 @@ struct NotchGeometry: Equatable {
     var notchWidth: CGFloat
     var notchHeight: CGFloat
     var hasHardwareNotch: Bool
+    /// Largeur de chaque côté de l'encoche en mode compact.
+    var side: CGFloat = Settings.shared.compactSide
 
-    static let compactSide: CGFloat = 40
     static let expandedSize = CGSize(width: 330, height: 160)
     /// Fenêtre fixe, un peu plus grande que le mode survol.
     static let panelSize = CGSize(width: 380, height: 180)
 
-    var compactSize: CGSize { CGSize(width: notchWidth + 2 * Self.compactSide, height: notchHeight) }
+    var compactSize: CGSize { CGSize(width: notchWidth + 2 * side, height: notchHeight) }
 
     /// Écran portant l'encoche, sinon l'écran de la barre des menus (encoche simulée).
     static func resolve() -> (screen: NSScreen, geometry: NotchGeometry)? {

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 /// État observable par les vues ; interpole la position de lecture avec un timer.
@@ -14,7 +15,8 @@ final class NowPlayingModel: ObservableObject {
     @Published private(set) var duration: Double = 0
     @Published private(set) var position: Double = 0
     @Published private(set) var artwork: NSImage?
-    @Published private(set) var accent: Color = Color(nsColor: AccentColor.fallback)
+    @Published private var extractedAccent: NSColor = AccentColor.fallback
+    var accent: Color { Settings.shared.accent.color ?? Color(nsColor: extractedAccent) }
 
     let service = NowPlayingService()
 
@@ -23,7 +25,6 @@ final class NowPlayingModel: ObservableObject {
     private var idleWork: DispatchWorkItem?
     private var sourceBundle: String?
     private var pauseArmed = false
-    private static let idleDelay: TimeInterval = 45
 
     /// Le timer ne tourne que lorsque la position est affichée.
     var tracksPosition = false {
@@ -34,7 +35,12 @@ final class NowPlayingModel: ObservableObject {
         }
     }
 
+    private var settingsObserver: AnyCancellable?
+
     init() {
+        settingsObserver = Settings.shared.objectWillChange.sink { [weak self] _ in
+            DispatchQueue.main.async { self?.objectWillChange.send() }
+        }
         service.onUpdate = { [weak self] snap in
             MainActor.assumeIsolated { self?.apply(snap) }
         }
@@ -59,7 +65,7 @@ final class NowPlayingModel: ObservableObject {
         if isPlaying != s.playing { isPlaying = s.playing }
         if duration != s.duration { duration = s.duration }
         artwork = s.artwork
-        accent = Color(nsColor: s.accent)
+        extractedAccent = s.accent
         position = computePosition()
         if !hasTrack { hasTrack = true }
         if sourceBundle != s.bundleID {
@@ -88,11 +94,12 @@ final class NowPlayingModel: ObservableObject {
             // Premier état « en pause » : visible, puis masqué après le délai.
             pauseArmed = true
             isShown = true
+            guard let delay = Settings.shared.idleDelay.seconds else { return }
             let work = DispatchWorkItem { [weak self] in
                 MainActor.assumeIsolated { self?.isShown = false }
             }
             idleWork = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + Self.idleDelay, execute: work)
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
         }
     }
 

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 /// Panneau sans bordure, transparent et non activant, posé sur l'encoche.
@@ -19,6 +20,7 @@ final class NotchWindowController {
     private var monitors: [Any] = []
     private var pending: DispatchWorkItem?
     private var pendingTarget: Bool?
+    private var settingsObserver: AnyCancellable?
 
     init(model: NowPlayingModel) {
         self.model = model
@@ -46,6 +48,9 @@ final class NotchWindowController {
 
     func start() {
         reposition()
+        settingsObserver = Settings.shared.objectWillChange.sink { [weak self] _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { self?.reposition() } }
+        }
         panel.orderFrontRegardless()
 
         NotificationCenter.default.addObserver(
@@ -127,7 +132,7 @@ final class NotchWindowController {
         ui.expanded = value
         panel.ignoresMouseEvents = !value
         model.tracksPosition = value
-        if value {
+        if value && Settings.shared.haptics {
             NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .default)
         }
     }
