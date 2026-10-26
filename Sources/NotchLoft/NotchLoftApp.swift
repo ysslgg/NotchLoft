@@ -61,6 +61,7 @@ struct NotchLoftApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let model = NowPlayingModel()
     private var controller: NotchWindowController?
+    private var signalSources: [DispatchSourceSignal] = []
 
     /// Une seule instance à la fois : la plus récente remplace les autres (mise à jour, nouvelle copie).
     /// Deux copies qui se disputent les autorisations macOS (Bureau…) réclamaient la permission en boucle.
@@ -79,6 +80,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         replaceOtherInstances()
+        // Arrêt par `kill` ou fermeture du Moniteur d'activité : on referme proprement l'adaptateur.
+        for sig in [SIGTERM, SIGINT] {
+            signal(sig, SIG_IGN)
+            let src = DispatchSource.makeSignalSource(signal: sig, queue: .main)
+            src.setEventHandler { NSApp.terminate(nil) }
+            src.resume()
+            signalSources.append(src)
+        }
         NSApp.setActivationPolicy(.accessory)
         controller = NotchWindowController(model: model, tools: ToolsHub.shared)
         controller?.start()
