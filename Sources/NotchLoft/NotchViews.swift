@@ -453,11 +453,13 @@ struct VisualizerBars: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !playing)) { ctx in
             let t = ctx.date.timeIntervalSinceReferenceDate
+            // Si le son du Mac est écouté, les barres suivent la musique ; sinon animation décorative.
+            let live = Settings.shared.reactiveVisualizer && AudioLevels.shared.isLive
             HStack(alignment: .center, spacing: 2) {
                 ForEach(0..<5, id: \.self) { i in
-                    let a = sin(t * speeds[i] + phases[i])
-                    let b = sin(t * speeds[i] * 0.53 + phases[i] * 1.9)
-                    let level = 0.5 + 0.5 * (0.6 * a + 0.4 * b)
+                    let level: Double = live
+                        ? Double(AudioLevels.shared.level(i))
+                        : 0.5 + 0.5 * (0.6 * sin(t * speeds[i] + phases[i]) + 0.4 * sin(t * speeds[i] * 0.53 + phases[i] * 1.9))
                     Capsule()
                         .fill(color)
                         .frame(width: 2, height: 4 + 12 * level)

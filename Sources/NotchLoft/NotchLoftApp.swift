@@ -12,6 +12,7 @@ struct NotchLoftApp: App {
         MenuBarExtra {
             Toggle("Visualiseur animé", isOn: $settings.showVisualizer)
             Toggle("Bague de progression", isOn: $settings.showProgressRing)
+            Toggle("Visualiseur réactif au son (autorisation requise)", isOn: $settings.reactiveVisualizer)
             Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
             Toggle("Retour haptique", isOn: $settings.haptics)
             Divider()
@@ -98,5 +99,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         model.stop()
+        AudioLevels.shared.shutdown()
     }
 }

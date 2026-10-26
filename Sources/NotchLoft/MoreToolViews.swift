@@ -225,10 +225,13 @@ struct SystemPage: View {
                 .frame(height: 46)
             HStack(spacing: 0) {
                 ForEach(others) { m in
+                    // Seule la jauge elle-même est cliquable, pas le vide autour : le geste est posé
+                    // avant que la colonne ne s'étire sur toute sa largeur.
                     gauge(m)
                         .contentShape(Rectangle())
                         .onTapGesture { withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { settings.systemHero = m.rawValue } }
                         .help("Afficher « \(m.title) » en grand")
+                        .frame(maxWidth: .infinity)
                 }
             }
             Spacer(minLength: 0)
@@ -388,7 +391,7 @@ struct SystemPage: View {
                 Text(detail(m)).font(.system(size: 9.5)).foregroundStyle(.white.opacity(0.45)).lineLimit(1)
             }
         }
-        .frame(maxWidth: .infinity)
+        .fixedSize()
     }
 }
 

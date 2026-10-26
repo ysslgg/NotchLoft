@@ -81,6 +81,8 @@ final class Settings: ObservableObject {
     @Published var enableSystem: Bool { didSet { d.set(enableSystem, forKey: "enableSystem") } }
     /// Info système affichée en grand : battery, cpu, memory ou disk.
     @Published var systemHero: String { didSet { d.set(systemHero, forKey: "systemHero") } }
+    /// Barres du visualiseur calées sur le vrai son (demande l'autorisation d'écouter le son du Mac).
+    @Published var reactiveVisualizer: Bool { didSet { d.set(reactiveVisualizer, forKey: "reactiveVisualizer") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -114,6 +116,7 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        reactiveVisualizer = d.object(forKey: "reactiveVisualizer") as? Bool ?? false
         systemHero = d.string(forKey: "systemHero") ?? "battery"
         enableFiles = bool("enableFiles")
         enableSystem = bool("enableSystem")

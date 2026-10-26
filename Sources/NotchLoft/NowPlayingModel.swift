@@ -57,12 +57,14 @@ final class NowPlayingModel: ObservableObject {
         guard let s = snap else {
             hasTrack = false
             isPlaying = false
+            AudioLevels.shared.setWanted(false)
             updateShown()
             return
         }
         if title != s.title { title = s.title }
         if artist != s.artist { artist = s.artist }
         if isPlaying != s.playing { isPlaying = s.playing }
+        AudioLevels.shared.setWanted(s.playing)
         if duration != s.duration { duration = s.duration }
         artwork = s.artwork
         extractedAccent = s.accent
