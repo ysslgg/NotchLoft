@@ -138,6 +138,18 @@ private struct CompactContent: View {
                             halo: model.isPlaying ? 0.45 : 0)
                     .opacity(model.isPlaying ? 1 : 0.55)
             }
+            // Logo de l'app source (Spotify, Musique…) en pastille sur la pochette
+            .overlay(alignment: .bottomTrailing) {
+                if let icon = model.sourceIcon {
+                    Image(nsImage: icon)
+                        .resizable()
+                        .frame(width: 11, height: 11)
+                        .clipShape(RoundedRectangle(cornerRadius: 2.5, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 2.5, style: .continuous).strokeBorder(.black, lineWidth: 1))
+                        .offset(x: 2, y: 3)
+                        .opacity(model.isPlaying ? 1 : 0.6)
+                }
+            }
             .frame(width: 24, height: 24)
             .padding(.leading, 12)
             Spacer(minLength: 0)
@@ -333,7 +345,7 @@ private struct ProgressBar: View {
             .animation(.spring(response: 0.25, dampingFraction: 0.8), value: active)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
-            .onHover { hover.on = $0 }
+            .hoverAlways { hover.on = $0 }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { v in
@@ -374,7 +386,7 @@ private struct ControlButton: View {
             .contentShape(Circle())
         }
         .buttonStyle(PressStyle())
-        .onHover { hover.on = $0 }
+        .hoverAlways { hover.on = $0 }
         .animation(.easeOut(duration: 0.15), value: hover.on)
     }
 }
@@ -461,7 +473,7 @@ private struct SourceButton: View {
                 .scaleEffect(hover.on ? 1.12 : 1)
         }
         .buttonStyle(PressStyle())
-        .onHover { hover.on = $0 }
+        .hoverAlways { hover.on = $0 }
         .animation(.easeOut(duration: 0.15), value: hover.on)
         .help("Ouvrir l'app")
     }

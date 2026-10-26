@@ -101,6 +101,10 @@ final class NotchWindowController {
     }
 
     private func mouseChanged() {
+        if ui.expanded {
+            let m = NSEvent.mouseLocation
+            MouseHub.shared.location = CGPoint(x: m.x - panel.frame.minX, y: panel.frame.maxY - m.y)
+        }
         guard canExpand else {
             if ui.expanded { schedule(open: false, delay: 0.24) } else { cancelPending() }
             return
@@ -144,6 +148,7 @@ final class NotchWindowController {
             ui.page = tool
         }
         ui.expanded = value
+        MouseHub.shared.location = CGPoint(x: -10_000, y: -10_000)
         panel.ignoresMouseEvents = !value
         model.tracksPosition = value
         if value && Settings.shared.haptics {

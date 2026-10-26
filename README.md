@@ -56,7 +56,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 ### 🧷 Étendoir à captures d'écran
 - Tes 5 dernières captures d'écran s'accrochent à une corde à linge, avec leurs pinces.
-- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, clic droit pour copier l'image ou l'afficher dans le Finder.
+- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier l'image, l'afficher dans le Finder ou la mettre à la corbeille.
 
 ### 🎚️ Mixeur audio
 - Volume et sourdine de la sortie, volume du micro.

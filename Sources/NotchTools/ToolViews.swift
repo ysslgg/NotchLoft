@@ -48,7 +48,7 @@ private struct TabButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(PressStyle())
-        .onHover { hover.on = $0 }
+        .hoverAlways { hover.on = $0 }
         .animation(.easeOut(duration: 0.15), value: hover.on)
         .animation(.easeOut(duration: 0.2), value: selected)
         .help(page.title)
@@ -84,7 +84,7 @@ struct ValueSlider: View {
             .animation(.spring(response: 0.25, dampingFraction: 0.8), value: active)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
-            .onHover { hover.on = $0 }
+            .hoverAlways { hover.on = $0 }
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { v in
@@ -186,7 +186,7 @@ private struct ClipRow: View {
         .padding(.horizontal, 8)
         .frame(height: 28)
         .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(.white.opacity(hover.on ? 0.1 : 0)))
-        .onHover { hover.on = $0 }
+        .hoverAlways { hover.on = $0 }
         .animation(.easeOut(duration: 0.12), value: hover.on)
     }
 
@@ -210,7 +210,7 @@ struct ShelfPage: View {
     let accent: Color
 
     private let size = NotchPage.shelf.size
-    private let thumb = CGSize(width: 74, height: 52)
+    private let thumb = CGSize(width: 90, height: 64)
 
     /// Altitude de la corde à l'abscisse x (courbe de Bézier quadratique symétrique).
     private func ropeY(_ x: CGFloat, top: CGFloat) -> CGFloat {
@@ -266,7 +266,7 @@ struct ShelfPage: View {
                     .foregroundStyle(.white.opacity(0.5))
                     .multilineTextAlignment(.center)
                     .frame(width: size.width - 60)
-                    .offset(x: 30, y: top + 74)
+                    .offset(x: 30, y: top + 90)
             }
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
@@ -300,14 +300,31 @@ private struct HangingShot: View {
                     .padding(.top, 7)
                 Peg()
             }
+            .overlay(alignment: .topTrailing) {
+                if hover.on {
+                    Button { shelf.dismiss(shot) } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 8, weight: .heavy))
+                            .foregroundStyle(.white)
+                            .frame(width: 18, height: 18)
+                            .background(Circle().fill(Color.black.opacity(0.75)))
+                            .overlay(Circle().strokeBorder(.white.opacity(0.35), lineWidth: 0.5))
+                            .contentShape(Circle())
+                    }
+                    .buttonStyle(PressStyle())
+                    .offset(x: -4, y: 11)
+                    .transition(.scale(scale: 0.5).combined(with: .opacity))
+                    .help("Retirer de l'étendoir")
+                }
+            }
             Text(Self.formatter.localizedString(for: shot.date, relativeTo: Date()))
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(.white.opacity(0.45))
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.55))
                 .lineLimit(1)
         }
         .scaleEffect(hover.on ? 1.1 : 1, anchor: .top)
         .animation(.spring(response: 0.25, dampingFraction: 0.7), value: hover.on)
-        .onHover { hover.on = $0 }
+        .hoverAlways { hover.on = $0 }
         .onTapGesture { NSWorkspace.shared.open(shot.url) }
         .onDrag { NSItemProvider(contentsOf: shot.url) ?? NSItemProvider() }
         .contextMenu {
@@ -319,6 +336,9 @@ private struct HangingShot: View {
             }
             Button("Afficher dans le Finder") { NSWorkspace.shared.activateFileViewerSelecting([shot.url]) }
             Button("Retirer de l'étendoir") { shelf.dismiss(shot) }
+            Button("Mettre à la corbeille") {
+                NSWorkspace.shared.recycle([shot.url]) { _, _ in DispatchQueue.main.async { shelf.dismiss(shot) } }
+            }
         }
         .help("Clic : ouvrir · Glisser : déposer ailleurs")
     }

@@ -29,7 +29,7 @@ enum NotchPage: String, CaseIterable, Identifiable {
         switch self {
         case .music: CGSize(width: 356, height: 160)
         case .clipboard: CGSize(width: 360, height: 232)
-        case .shelf: CGSize(width: 430, height: 160)
+        case .shelf: CGSize(width: 530, height: 180)
         case .audio: CGSize(width: 340, height: 184)
         }
     }
