@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Pages de l'encoche : la musique et les outils.
 enum NotchPage: String, CaseIterable, Identifiable {
-    case music, clipboard, shelf, audio
+    case music, clipboard, shelf
 
     var id: String { rawValue }
 
@@ -11,7 +11,6 @@ enum NotchPage: String, CaseIterable, Identifiable {
         case .music: "music.note"
         case .clipboard: "doc.on.clipboard"
         case .shelf: "photo.on.rectangle.angled"
-        case .audio: "slider.vertical.3"
         }
     }
 
@@ -20,7 +19,6 @@ enum NotchPage: String, CaseIterable, Identifiable {
         case .music: "Musique"
         case .clipboard: "Presse-papier"
         case .shelf: "Étendoir"
-        case .audio: "Audio"
         }
     }
 
@@ -30,7 +28,6 @@ enum NotchPage: String, CaseIterable, Identifiable {
         case .music: CGSize(width: 356, height: 160)
         case .clipboard: CGSize(width: 360, height: 232)
         case .shelf: CGSize(width: 530, height: 180)
-        case .audio: CGSize(width: 340, height: 216)
         }
     }
 
@@ -40,7 +37,6 @@ enum NotchPage: String, CaseIterable, Identifiable {
         case .music: return true
         case .clipboard: return s.enableClipboard
         case .shelf: return s.enableShelf
-        case .audio: return s.enableAudio
         }
     }
 

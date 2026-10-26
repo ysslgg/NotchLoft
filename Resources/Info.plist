@@ -15,7 +15,6 @@
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSAudioCaptureUsageDescription</key><string>NotchLoft règle le volume de chaque application en interceptant puis en rejouant son son. Rien n'est enregistré.</string>
     <key>NSHumanReadableCopyright</key><string>© NotchLoft. Tous droits réservés.</string>
 </dict>
 </plist>

@@ -6,7 +6,7 @@
 
 **La boîte à outils cachée dans l'encoche de ton MacBook.**
 
-Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : survole l'encoche, tout est là.
+Musique en cours, presse-papier, étendoir à captures d'écran : survole l'encoche, tout est là.
 
 [![Télécharger NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
@@ -28,10 +28,6 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 <img src="docs/clipboard.png" width="400" alt="L'historique du presse-papier">
 
 <sub>Presse-papier</sub>
-
-<img src="docs/audio.png" width="380" alt="Le mixeur audio : volumes et périphériques">
-
-<sub>Mixeur audio</sub>
 
 <br>
 
@@ -60,11 +56,6 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 - **Animation** : à chaque nouvelle capture, la miniature s'envole vers l'encoche, qui s'ouvre un instant pour l'accrocher.
 - Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier, afficher dans le Finder ou mettre à la corbeille.
 
-### 🎚️ Mixeur audio
-- Volume et sourdine de la sortie, volume du micro.
-- **Volume par application** (comme le mélangeur de Windows) : un curseur et une sourdine pour chaque app qui joue du son. Il s'active seulement quand tu touches à un curseur, et les apps que tu ne règles pas ne sont pas modifiées.
-- Change de sortie (haut-parleurs, AirPods, écran…) ou d'entrée en un clic.
-
 ### Et aussi
 - **Onglets** dans les ailes de l'encoche pour passer d'un outil à l'autre.
 - **Personnalisable** depuis l'icône de la barre des menus : activer ou non chaque outil, visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage, vérification des mises à jour.
@@ -82,7 +73,6 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 - Le presse-papier ne garde que le texte, pas les images ni les fichiers.
 - L'étendoir ne voit pas les captures envoyées directement vers une app (Mail, Messages…) : elles n'existent ni en fichier ni dans le presse-papiers.
-- Le volume par application demande macOS 14.2 et l'autorisation « Enregistrement audio de l'app » (réglable dans Confidentialité). Il ne peut pas régler les contenus protégés par DRM, et les apps qui passent par le moteur de Safari (WebKit) n'apparaissent pas toujours.
 - Le visualiseur est purement décoratif : il ne capte pas le son.
 - L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.
 - Les informations de lecture dépendent de ce que l'app transmet au système : certains lecteurs n'envoient ni pochette ni durée.

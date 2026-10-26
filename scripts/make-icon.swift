@@ -42,7 +42,7 @@ func peg(_ x: CGFloat, _ y: CGFloat) {
     ctx.setFillColor(col(0.55, 0.4, 0.75, 0.55))
     ctx.fill(CGRect(x: x - 14, y: y + 6, width: 28, height: 3))
 }
-let ropeTop: CGFloat = 705
+let ropeTop: CGFloat = 610
 func ropeY(_ x: CGFloat) -> CGFloat {
     let t = (x - 150) / (874 - 150)
     return ropeTop - 4 * 38 * t * (1 - t)
@@ -129,22 +129,6 @@ hang(744, angle: -5) {
     ctx.addPath(p); ctx.setStrokeColor(col(1, 1, 1, 0.9)); ctx.setLineWidth(7); ctx.strokePath()
 }
 peg(280, ropeY(280)); peg(512, ropeY(512)); peg(744, ropeY(744))
-
-// Mixeur : trois curseurs verticaux en bas
-for (i, (x, v)) in [(330.0, 0.65), (512.0, 0.35), (694.0, 0.8)].enumerated() {
-    _ = i
-    let h: CGFloat = 130, y0: CGFloat = 175
-    let track = CGPath(roundedRect: CGRect(x: x - 11, y: y0, width: 22, height: h), cornerWidth: 11, cornerHeight: 11, transform: nil)
-    ctx.addPath(track); ctx.setFillColor(col(1, 1, 1, 0.22)); ctx.fillPath()
-    let fillH = h * CGFloat(v)
-    ctx.addPath(CGPath(roundedRect: CGRect(x: x - 11, y: y0, width: 22, height: fillH), cornerWidth: 11, cornerHeight: 11, transform: nil))
-    ctx.setFillColor(col(1, 0.62, 0.88)); ctx.fillPath()
-    ctx.saveGState()
-    ctx.setShadow(offset: CGSize(width: 0, height: -3), blur: 6, color: col(0, 0, 0, 0.4))
-    ctx.setFillColor(col(1, 1, 1))
-    ctx.fillEllipse(in: CGRect(x: x - 21, y: y0 + fillH - 21, width: 42, height: 42))
-    ctx.restoreGState()
-}
 
 // Encoche noire en haut (forme avec oreilles concaves)
 let nw: CGFloat = 470, nh: CGFloat = 150, ear: CGFloat = 34, br: CGFloat = 56

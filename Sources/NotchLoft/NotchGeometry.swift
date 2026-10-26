@@ -9,7 +9,7 @@ struct NotchGeometry: Equatable {
     var side: CGFloat = Settings.shared.compactSide
 
     /// Fenêtre fixe, un peu plus grande que la plus grande page.
-    static let panelSize = CGSize(width: 560, height: 280)
+    static let panelSize = CGSize(width: 560, height: 264)
 
     var compactSize: CGSize { CGSize(width: notchWidth + 2 * side, height: notchHeight) }
 

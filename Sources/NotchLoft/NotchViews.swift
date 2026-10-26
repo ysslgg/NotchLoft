@@ -77,8 +77,6 @@ struct NotchRootView: View {
                         ClipboardPage(store: tools.clipboard, ui: ui, accent: model.accent).transition(.opacity)
                     case .shelf:
                         ShelfPage(shelf: tools.shelf, ui: ui, accent: model.accent).transition(.opacity)
-                    case .audio:
-                        AudioPage(mixer: tools.audio, apps: tools.apps, ui: ui, accent: model.accent).transition(.opacity)
                     }
                 }
                 .frame(width: ui.pageSize.width, height: ui.pageSize.height, alignment: .top)

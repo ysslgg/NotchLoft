@@ -17,7 +17,6 @@ struct NotchLoftApp: App {
             Divider()
             Toggle("Outil : presse-papier", isOn: $settings.enableClipboard)
             Toggle("Outil : étendoir à captures", isOn: $settings.enableShelf)
-            Toggle("Outil : mixeur audio", isOn: $settings.enableAudio)
             Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
             Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
             Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
@@ -68,6 +67,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         model.stop()
-        ToolsHub.shared.apps.shutdown()
     }
 }

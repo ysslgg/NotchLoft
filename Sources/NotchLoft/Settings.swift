@@ -76,7 +76,6 @@ final class Settings: ObservableObject {
     @Published var blurBackdrop: Bool { didSet { d.set(blurBackdrop, forKey: "blurBackdrop") } }
     @Published var enableClipboard: Bool { didSet { d.set(enableClipboard, forKey: "enableClipboard") } }
     @Published var enableShelf: Bool { didSet { d.set(enableShelf, forKey: "enableShelf") } }
-    @Published var enableAudio: Bool { didSet { d.set(enableAudio, forKey: "enableAudio") } }
     @Published var autoUpdateCheck: Bool { didSet { d.set(autoUpdateCheck, forKey: "autoUpdateCheck") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
@@ -96,7 +95,7 @@ final class Settings: ObservableObject {
         }
     }
 
-    var hasTools: Bool { enableClipboard || enableShelf || enableAudio }
+    var hasTools: Bool { enableClipboard || enableShelf }
 
     var compactSide: CGFloat { compactWidth.side }
 
@@ -109,7 +108,6 @@ final class Settings: ObservableObject {
         haptics = bool("haptics")
         enableClipboard = bool("enableClipboard")
         enableShelf = bool("enableShelf")
-        enableAudio = bool("enableAudio")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
         autoUpdateCheck = bool("autoUpdateCheck")
