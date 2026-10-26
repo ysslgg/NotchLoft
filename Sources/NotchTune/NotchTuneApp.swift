@@ -29,7 +29,7 @@ struct NotchTuneApp: App {
             Button("Quitter NotchTune") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
         } label: {
-            Text("♪")
+            Image(nsImage: MenuBarIcon.make())
         }
     }
 }
