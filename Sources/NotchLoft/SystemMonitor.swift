@@ -14,25 +14,47 @@ struct BatteryInfo: Equatable {
 }
 
 /// Batterie, processeur, mémoire et disque. Ne mesure que lorsque la page est affichée.
+/// Toutes les valeurs sont regroupées et arrondies : la vue n'est mise à jour que si quelque chose change.
 final class SystemMonitor: ObservableObject {
-    @Published private(set) var battery = BatteryInfo()
-    @Published private(set) var cpu: Double = 0
-    @Published private(set) var memoryUsed: Double = 0
-    @Published private(set) var memoryTotalGB: Double = 0
-    @Published private(set) var memoryUsedGB: Double = 0
-    @Published private(set) var diskUsed: Double = 0
-    @Published private(set) var diskFreeGB: Double = 0
-    @Published private(set) var diskTotalGB: Double = 0
-    @Published private(set) var cpuHistory: [Double] = []
-    @Published private(set) var thermal = "Normale"
+    struct Stats: Equatable {
+        var battery = BatteryInfo()
+        var cpu: Double = 0
+        var memoryUsed: Double = 0
+        var memoryTotalGB: Double = 0
+        var memoryUsedGB: Double = 0
+        var diskUsed: Double = 0
+        var diskFreeGB: Double = 0
+        var diskTotalGB: Double = 0
+        var cpuHistory: [Double] = []
+        var thermal = "Normale"
+    }
+
+    @Published private(set) var stats = Stats()
+
+    var battery: BatteryInfo { stats.battery }
+    var cpu: Double { stats.cpu }
+    var memoryUsed: Double { stats.memoryUsed }
+    var memoryTotalGB: Double { stats.memoryTotalGB }
+    var memoryUsedGB: Double { stats.memoryUsedGB }
+    var diskUsed: Double { stats.diskUsed }
+    var diskFreeGB: Double { stats.diskFreeGB }
+    var diskTotalGB: Double { stats.diskTotalGB }
+    var cpuHistory: [Double] { stats.cpuHistory }
+    var thermal: String { stats.thermal }
+
+    /// La courbe du processeur n'est conservée (et redessinée) que si elle est affichée.
+    var trackHistory = false
 
     private var timer: Timer?
     private var lastTicks: (user: UInt32, system: UInt32, idle: UInt32, nice: UInt32)?
+    private var smart: (cycles: Int?, health: Int?)?
+    private var smartDate = Date.distantPast
 
     func start() {
         refresh()
         timer?.invalidate()
-        let t = Timer(timeInterval: 1, repeats: true) { [weak self] _ in self?.refresh() }
+        let t = Timer(timeInterval: 2, repeats: true) { [weak self] _ in self?.refresh() }
+        t.tolerance = 0.4
         RunLoop.main.add(t, forMode: .common)
         timer = t
     }
@@ -44,21 +66,31 @@ final class SystemMonitor: ObservableObject {
     }
 
     private func refresh() {
-        let b = Self.readBattery()
-        if b != battery { battery = b }
+        var n = stats
+        n.battery = Self.readBattery()
+        // Cycles et santé changent très lentement : on ne les relit qu'une fois par minute.
+        if n.battery.hasBattery {
+            if smart == nil || Date().timeIntervalSince(smartDate) > 60 {
+                smart = Self.readSmartBattery()
+                smartDate = Date()
+            }
+            n.battery.cycles = smart?.cycles
+            n.battery.health = smart?.health
+        }
         if let c = readCPU() {
-            cpu = c
-            cpuHistory = Array((cpuHistory + [c]).suffix(40))
+            n.cpu = (c * 100).rounded() / 100
+            if trackHistory { n.cpuHistory = Array((n.cpuHistory + [c]).suffix(40)) }
         }
         switch ProcessInfo.processInfo.thermalState {
-        case .nominal: thermal = "Normale"
-        case .fair: thermal = "Moyenne"
-        case .serious: thermal = "Élevée"
-        case .critical: thermal = "Critique"
-        @unknown default: thermal = "—"
+        case .nominal: n.thermal = "Normale"
+        case .fair: n.thermal = "Moyenne"
+        case .serious: n.thermal = "Élevée"
+        case .critical: n.thermal = "Critique"
+        @unknown default: n.thermal = "—"
         }
-        readMemory()
-        readDisk()
+        readMemory(into: &n)
+        readDisk(into: &n)
+        if n != stats { stats = n }
     }
 
     // MARK: Batterie
@@ -80,23 +112,23 @@ final class SystemMonitor: ObservableObject {
             let key = info.isPluggedIn ? kIOPSTimeToFullChargeKey : kIOPSTimeToEmptyKey
             if let m = d[key] as? Int, m > 0 { info.minutes = m }
         }
-        if info.hasBattery { readSmartBattery(into: &info) }
         return info
     }
 
-    private static func readSmartBattery(into info: inout BatteryInfo) {
+    private static func readSmartBattery() -> (cycles: Int?, health: Int?) {
         let svc = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("AppleSmartBattery"))
-        guard svc != 0 else { return }
+        guard svc != 0 else { return (nil, nil) }
         defer { IOObjectRelease(svc) }
         func int(_ key: String) -> Int? {
             IORegistryEntryCreateCFProperty(svc, key as CFString, kCFAllocatorDefault, 0)?.takeRetainedValue() as? Int
         }
-        info.cycles = int("CycleCount")
+        var health: Int?
         if let design = int("DesignCapacity"), design > 0, let raw = int("AppleRawMaxCapacity") ?? int("MaxCapacity"), raw > 100 {
-            info.health = Swift.min(100, Int((Double(raw) / Double(design) * 100).rounded()))
+            health = Swift.min(100, Int((Double(raw) / Double(design) * 100).rounded()))
         } else if let m = int("MaxCapacity"), (1...100).contains(m) {
-            info.health = m   // certains Mac donnent directement un pourcentage
+            health = m   // certains Mac donnent directement un pourcentage
         }
+        return (int("CycleCount"), health)
     }
 
     // MARK: Processeur, mémoire, disque
@@ -119,7 +151,7 @@ final class SystemMonitor: ObservableObject {
         return total > 0 ? (du + ds + dn) / total : nil
     }
 
-    private func readMemory() {
+    private func readMemory(into n: inout Stats) {
         var stats = vm_statistics64()
         var count = mach_msg_type_number_t(MemoryLayout<vm_statistics64_data_t>.size / MemoryLayout<integer_t>.size)
         let r = withUnsafeMutablePointer(to: &stats) {
@@ -131,17 +163,17 @@ final class SystemMonitor: ObservableObject {
         let page = Double(vm_kernel_page_size)
         let used = (Double(stats.active_count) + Double(stats.wire_count) + Double(stats.compressor_page_count)) * page
         let total = Double(ProcessInfo.processInfo.physicalMemory)
-        memoryTotalGB = total / 1_073_741_824
-        memoryUsedGB = used / 1_073_741_824
-        memoryUsed = Swift.min(1, used / total)
+        n.memoryTotalGB = total / 1_073_741_824
+        n.memoryUsedGB = ((used / 1_073_741_824) * 10).rounded() / 10
+        n.memoryUsed = (Swift.min(1, used / total) * 100).rounded() / 100
     }
 
-    private func readDisk() {
+    private func readDisk(into n: inout Stats) {
         let keys: Set<URLResourceKey> = [.volumeTotalCapacityKey, .volumeAvailableCapacityForImportantUsageKey]
         guard let v = try? URL(fileURLWithPath: "/").resourceValues(forKeys: keys),
               let total = v.volumeTotalCapacity, let free = v.volumeAvailableCapacityForImportantUsage, total > 0 else { return }
-        diskFreeGB = Double(free) / 1_000_000_000
-        diskTotalGB = Double(total) / 1_000_000_000
-        diskUsed = 1 - Double(free) / Double(total)
+        n.diskFreeGB = (Double(free) / 1_000_000_000).rounded()
+        n.diskTotalGB = (Double(total) / 1_000_000_000).rounded()
+        n.diskUsed = ((1 - Double(free) / Double(total)) * 100).rounded() / 100
     }
 }

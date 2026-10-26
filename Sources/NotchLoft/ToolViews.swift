@@ -195,13 +195,7 @@ struct ShelfPage: View {
                     Color.clear.frame(width: sidePad, height: 1)
                     ForEach(Array(shelf.shots.enumerated()), id: \.element.id) { i, shot in
                         let cx = sidePad + slotW * (CGFloat(i) + 0.5)
-                        TimelineView(.animation(minimumInterval: 1.0 / 24, paused: !ui.expanded)) { ctx in
-                            let t = ctx.date.timeIntervalSinceReferenceDate
-                            let tilt = [-2.2, 1.6, -1.0, 2.4, -1.8][i % 5]
-                            let sway = sin(t * 1.1 + Double(i) * 1.7) * 1.4
-                            HangingShot(shot: shot, shelf: shelf, thumb: thumb)
-                                .rotationEffect(.degrees(tilt + sway), anchor: .top)
-                        }
+                        HangingShot(shot: shot, shelf: shelf, thumb: thumb, index: i)
                         .frame(width: slotW, height: scrollH - ropeY(cx, top: top), alignment: .top)
                         .padding(.top, ropeY(cx, top: top) - 4)
                         .id(shot.url)
@@ -285,7 +279,10 @@ private struct HangingShot: View {
     let shot: Shot
     @ObservedObject var shelf: ScreenshotShelf
     let thumb: CGSize
+    let index: Int
     @StateObject private var hover = HoverBox()
+
+    private var tilt: Double { [-2.2, 1.6, -1.0, 2.4, -1.8][index % 5] }
 
     private static let formatter: RelativeDateTimeFormatter = {
         let f = RelativeDateTimeFormatter()
@@ -350,6 +347,9 @@ private struct HangingShot: View {
         }
         .scaleEffect(hover.on ? 1.1 : 1, anchor: .top)
         .animation(.spring(response: 0.25, dampingFraction: 0.7), value: hover.on)
+        // Au survol, la capture se redresse en pendulant une fois (aucune animation permanente).
+        .rotationEffect(.degrees(hover.on ? 0 : tilt), anchor: .top)
+        .animation(.interpolatingSpring(stiffness: 90, damping: 5), value: hover.on)
         .hoverAlways { hover.on = $0 }
         .onTapGesture { NSWorkspace.shared.open(shot.url) }
         .onDrag { NSItemProvider(contentsOf: shot.url) ?? NSItemProvider() }

@@ -236,7 +236,8 @@ struct SystemPage: View {
         .padding(.horizontal, 30)
         .padding(.bottom, 10)
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: hero)
-        .onAppear { if ui.expanded { monitor.start() } }
+        .onChange(of: hero) { _, h in monitor.trackHistory = (h == .cpu) }
+        .onAppear { monitor.trackHistory = (hero == .cpu); if ui.expanded { monitor.start() } }
         .onChange(of: ui.expanded) { _, open in open ? monitor.start() : monitor.stop() }
         .onDisappear { monitor.stop() }
     }
