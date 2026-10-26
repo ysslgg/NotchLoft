@@ -29,6 +29,14 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, bat
 
 <sub>Presse-papier</sub>
 
+<img src="docs/files.png" width="460" alt="Le dépôt de fichiers : fichiers accrochés à la corde à linge">
+
+<sub>Dépôt de fichiers</sub>
+
+<img src="docs/system.png" width="420" alt="Batterie et système : niveau de batterie, processeur, mémoire et disque">
+
+<sub>Batterie et système</sub>
+
 <br>
 
 <img src="docs/compact.png" width="460" alt="L'encoche au repos : pochette à gauche, visualiseur à droite">
