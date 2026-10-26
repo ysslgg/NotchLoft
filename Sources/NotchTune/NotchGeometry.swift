@@ -6,7 +6,7 @@ struct NotchGeometry: Equatable {
     var notchHeight: CGFloat
     var hasHardwareNotch: Bool
 
-    static let compactSide: CGFloat = 32
+    static let compactSide: CGFloat = 40
     static let expandedSize = CGSize(width: 330, height: 160)
     /// Fenêtre fixe, un peu plus grande que le mode survol.
     static let panelSize = CGSize(width: 380, height: 180)

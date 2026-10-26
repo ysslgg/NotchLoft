@@ -90,7 +90,7 @@ private struct CompactContent: View {
                     .opacity(model.isPlaying ? 1 : 0.55)
             }
             .frame(width: 24, height: 24)
-            .padding(.leading, 7)
+            .padding(.leading, 12)
             Spacer(minLength: 0)
             ZStack {
                 VisualizerBars(color: model.accent, playing: model.isPlaying)
@@ -104,7 +104,7 @@ private struct CompactContent: View {
             }
             .animation(.spring(response: 0.3, dampingFraction: 0.75), value: model.isPlaying)
             .frame(width: 18, height: 18)
-            .padding(.trailing, 9)
+            .padding(.trailing, 12)
         }
         .frame(maxHeight: .infinity)
         .animation(.easeOut(duration: 0.25), value: model.isPlaying)
