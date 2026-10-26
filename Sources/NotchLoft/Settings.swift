@@ -83,6 +83,8 @@ final class Settings: ObservableObject {
     @Published var systemHero: String { didSet { d.set(systemHero, forKey: "systemHero") } }
     /// Barres du visualiseur calées sur le vrai son (demande l'autorisation d'écouter le son du Mac).
     @Published var reactiveVisualizer: Bool { didSet { d.set(reactiveVisualizer, forKey: "reactiveVisualizer") } }
+    /// Masque l'encoche au repos dans une app en plein écran (elle s'ouvre toujours au survol).
+    @Published var hideInFullscreen: Bool { didSet { d.set(hideInFullscreen, forKey: "hideInFullscreen") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -116,6 +118,7 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        hideInFullscreen = bool("hideInFullscreen")
         reactiveVisualizer = bool("reactiveVisualizer")
         systemHero = d.string(forKey: "systemHero") ?? "battery"
         enableFiles = bool("enableFiles")

@@ -13,6 +13,7 @@ struct NotchLoftApp: App {
             Toggle("Visualiseur animé", isOn: $settings.showVisualizer)
             Toggle("Bague de progression", isOn: $settings.showProgressRing)
             Toggle("Visualiseur réactif au son (autorisation requise)", isOn: $settings.reactiveVisualizer)
+            Toggle("Se masquer dans les apps en plein écran", isOn: $settings.hideInFullscreen)
             Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
             Toggle("Retour haptique", isOn: $settings.haptics)
             Divider()
@@ -93,6 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         controller = NotchWindowController(model: model, tools: ToolsHub.shared)
         controller?.start()
         ToolsHub.shared.start()
+        FullscreenDetector.shared.start()
         UpdateChecker.shared.startAutomaticChecks()
         model.start()
     }

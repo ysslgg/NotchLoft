@@ -36,10 +36,13 @@ struct NotchRootView: View {
     @ObservedObject var model: NowPlayingModel
     @ObservedObject var ui: NotchUIState
     let tools: ToolsHub
+    @ObservedObject private var fullscreen = FullscreenDetector.shared
+    @ObservedObject private var settings = Settings.shared
 
     var body: some View {
         let g = ui.geometry
-        let musicShown = model.isShown
+        // En plein écran, l'encoche se fond dans le bord (invisible) ; elle s'ouvre toujours au survol.
+        let musicShown = model.isShown && !(settings.hideInFullscreen && fullscreen.isFullscreen)
         let open = ui.expanded
         let size: CGSize = open
             ? ui.pageSize

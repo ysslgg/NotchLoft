@@ -90,6 +90,11 @@ final class NotchWindowController {
     // MARK: Survol
 
     /// L'encoche s'ouvre s'il y a de la musique, ou à défaut des outils (si le réglage l'autorise).
+    /// Le mode repos est affiché (musique en cours, et pas masqué par un plein écran).
+    private var compactVisible: Bool {
+        model.isShown && !(Settings.shared.hideInFullscreen && FullscreenDetector.shared.isFullscreen)
+    }
+
     private var canExpand: Bool {
         model.isShown || (Settings.shared.hasTools && Settings.shared.openWhenIdle)
     }
@@ -106,7 +111,7 @@ final class NotchWindowController {
         let g = ui.geometry
         var size = expanded
             ? ui.pageSize
-            : (model.isShown ? g.compactSize : CGSize(width: g.notchWidth, height: g.notchHeight))
+            : (compactVisible ? g.compactSize : CGSize(width: g.notchWidth, height: g.notchHeight))
         // Marges : tolérance au bord haut de l'écran, et hystérésis une fois ouvert.
         let pad: CGFloat = expanded ? 10 : 0
         size.width += 2 * pad
