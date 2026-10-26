@@ -1,0 +1,4 @@
+"NSDesktopFolderUsageDescription" = "NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.";
+"NSDocumentsFolderUsageDescription" = "NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.";
+"NSDownloadsFolderUsageDescription" = "NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.";
+"NSAudioCaptureUsageDescription" = "NotchLoft listens to your Mac's sound, read-only, to animate the visualizer. Nothing is recorded or sent.";

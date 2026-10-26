@@ -40,7 +40,7 @@ final class AudioLevels {
                 do {
                     listener = try TapListener(levels: levels, lastSound: lastSound)
                 } catch {
-                    NSLog("NotchLoft: écoute du son impossible (\(error))")
+                    NSLog("NotchLoft: could not listen to system audio (\(error))")
                 }
             } else if !shouldRun, let l = listener as? TapListener {
                 l.stop()
@@ -95,7 +95,7 @@ final class TapListener {
         guard status == noErr else { throw ListenError(status: status) }
 
         let agg: [String: Any] = [
-            kAudioAggregateDeviceNameKey: "NotchLoft Écoute",
+            kAudioAggregateDeviceNameKey: "NotchLoft Listener",
             kAudioAggregateDeviceUIDKey: UUID().uuidString,
             kAudioAggregateDeviceMainSubDeviceKey: uid,
             kAudioAggregateDeviceIsPrivateKey: true,
@@ -253,7 +253,7 @@ final class SpectrumAnalyzer {
         if Self.debug {
             debugCount += 1
             if debugCount % 43 == 0 {
-                NSLog("bandes: " + smooth.map { String(format: "%.2f", $0) }.joined(separator: " "))
+                NSLog("bands: " + smooth.map { String(format: "%.2f", $0) }.joined(separator: " "))
             }
         }
     }

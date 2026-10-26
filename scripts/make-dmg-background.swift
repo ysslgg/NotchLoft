@@ -31,7 +31,7 @@ ctx.addPath(head); ctx.strokePath()
 let attrs: [NSAttributedString.Key: Any] = [
     .font: NSFont.systemFont(ofSize: 15, weight: .medium),
     .foregroundColor: NSColor(calibratedRed: 0.35, green: 0.15, blue: 0.6, alpha: 0.9)]
-let text = "Glisse NotchLoft dans Applications" as NSString
+let text = "Drag NotchLoft into Applications" as NSString
 NSGraphicsContext.saveGraphicsState()
 NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: false)
 let size = text.size(withAttributes: attrs)

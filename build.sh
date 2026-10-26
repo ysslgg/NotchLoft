@@ -28,6 +28,9 @@ cp "$BIN_DIR/NotchLoft" "$APP/Contents/MacOS/NotchLoft"
 cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
 cp "$ADAPTER_DIR/bin/mediaremote-adapter.pl" "$APP/Contents/Resources/"
 cp -R "$ADAPTER_DIR/build/MediaRemoteAdapter.framework" "$APP/Contents/Frameworks/"
+for lp in "$ROOT"/Resources/*.lproj; do
+    [ -d "$lp" ] && cp -R "$lp" "$APP/Contents/Resources/"
+done
 if [ -f "$ROOT/Resources/AppIcon.icns" ]; then
     cp "$ROOT/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 fi

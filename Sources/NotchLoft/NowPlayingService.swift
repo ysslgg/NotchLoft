@@ -80,7 +80,7 @@ final class NowPlayingService: @unchecked Sendable {
 
     private func launch() {
         guard let paths = Self.locate() else {
-            NSLog("NotchLoft: adaptateur MediaRemote introuvable")
+            NSLog("NotchLoft: MediaRemote adapter not found")
             return
         }
         let p = Process()
@@ -107,7 +107,7 @@ final class NowPlayingService: @unchecked Sendable {
             try p.run()
             process = p
         } catch {
-            NSLog("NotchLoft: impossible de lancer perl: \(error)")
+            NSLog("NotchLoft: could not launch perl: \(error)")
         }
     }
 

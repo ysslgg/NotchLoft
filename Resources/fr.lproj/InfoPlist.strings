@@ -1,0 +1,4 @@
+"NSDesktopFolderUsageDescription" = "NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.";
+"NSDocumentsFolderUsageDescription" = "NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.";
+"NSDownloadsFolderUsageDescription" = "NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.";
+"NSAudioCaptureUsageDescription" = "NotchLoft écoute le son du Mac, en lecture seule, pour animer le visualiseur. Rien n'est enregistré ni envoyé.";

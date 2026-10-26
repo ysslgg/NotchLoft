@@ -36,7 +36,7 @@ func text(_ s: String, _ size: CGFloat, _ weight: NSFont.Weight, _ alpha: CGFloa
                                                   .foregroundColor: NSColor.white.withAlphaComponent(alpha)])
 }
 text("NotchLoft", 92, .heavy, 1, at: NSPoint(x: 350, y: 150))
-text("Musique, presse-papier, captures : tout dans l'encoche.", 33, .medium, 0.9, at: NSPoint(x: 356, y: 100))
-text("macOS 14+  ·  Apple Silicon et Intel  ·  Gratuit", 23, .regular, 0.7, at: NSPoint(x: 358, y: 58))
+text("Music, clipboard, screenshots, files: all in your notch.", 33, .medium, 0.9, at: NSPoint(x: 356, y: 100))
+text("macOS 14+  ·  Apple Silicon and Intel  ·  Free", 23, .regular, 0.7, at: NSPoint(x: 358, y: 58))
 NSGraphicsContext.restoreGraphicsState()
 try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: a[3]))

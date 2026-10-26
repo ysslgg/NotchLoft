@@ -11,75 +11,79 @@ struct NotchLoftApp: App {
     var body: some Scene {
         MenuBarExtra {
             Menu {
-                Toggle("Presse-papier", isOn: $settings.enableClipboard)
-                Toggle("Étendoir à captures", isOn: $settings.enableShelf)
-                Toggle("Dépôt de fichiers", isOn: $settings.enableFiles)
-                Toggle("Batterie et système", isOn: $settings.enableSystem)
+                Toggle(tr("Clipboard"), isOn: $settings.enableClipboard)
+                Toggle(tr("Screenshot shelf"), isOn: $settings.enableShelf)
+                Toggle(tr("File tray"), isOn: $settings.enableFiles)
+                Toggle(tr("Battery & system"), isOn: $settings.enableSystem)
                 Divider()
-                Picker("Info système en grand", selection: $settings.systemHero) {
+                Picker(tr("Featured system info"), selection: $settings.systemHero) {
                     ForEach(SystemMetric.allCases) { Text($0.title).tag($0.rawValue) }
                 }
-                Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
-                Button("Réessayer l'accès au dossier des captures") { ToolsHub.shared.shelf.retryAccess() }
+                Button(tr("Clear clipboard history")) { ToolsHub.shared.clipboard.clearUnpinned() }
+                Button(tr("Retry access to the screenshots folder")) { ToolsHub.shared.shelf.retryAccess() }
             } label: {
-                Label("Outils", systemImage: "square.grid.2x2")
+                Label(tr("Tools"), systemImage: "square.grid.2x2")
             }
 
             Menu {
-                Picker("Page à l'ouverture", selection: $settings.openPage) {
-                    Text("Dernière utilisée").tag("last")
+                Picker(tr("Page on open"), selection: $settings.openPage) {
+                    Text(tr("Last used")).tag("last")
                     ForEach(NotchPage.enabled) { Text($0.title).tag($0.rawValue) }
                 }
-                Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
-                Toggle("Se masquer dans les apps en plein écran", isOn: $settings.hideInFullscreen)
-                Picker("Masquer après une pause", selection: $settings.idleDelay) {
+                Toggle(tr("Open tools when nothing is playing"), isOn: $settings.openWhenIdle)
+                Toggle(tr("Hide in full-screen apps"), isOn: $settings.hideInFullscreen)
+                Picker(tr("Hide after a pause"), selection: $settings.idleDelay) {
                     ForEach(IdleDelay.allCases) { Text($0.label).tag($0) }
                 }
             } label: {
-                Label("Ouverture et affichage", systemImage: "rectangle.topthird.inset.filled")
+                Label(tr("Opening & display"), systemImage: "rectangle.topthird.inset.filled")
             }
 
             Menu {
-                Picker("Couleur d'accent", selection: $settings.accent) {
+                Picker(tr("Accent color"), selection: $settings.accent) {
                     ForEach(AccentChoice.allCases) { Text($0.label).tag($0) }
                 }
-                Picker("Largeur au repos", selection: $settings.compactWidth) {
+                Picker(tr("Idle width"), selection: $settings.compactWidth) {
                     ForEach(CompactWidth.allCases) { Text($0.label).tag($0) }
                 }
                 Divider()
-                Toggle("Visualiseur animé", isOn: $settings.showVisualizer)
-                Toggle("Visualiseur réactif au son (autorisation requise)", isOn: $settings.reactiveVisualizer)
-                Toggle("Bague de progression", isOn: $settings.showProgressRing)
-                Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
+                Toggle(tr("Animated visualizer"), isOn: $settings.showVisualizer)
+                Toggle(tr("Sound-reactive visualizer (permission required)"), isOn: $settings.reactiveVisualizer)
+                Toggle(tr("Progress ring"), isOn: $settings.showProgressRing)
+                Toggle(tr("Blurred artwork background"), isOn: $settings.blurBackdrop)
             } label: {
-                Label("Apparence et musique", systemImage: "paintpalette")
+                Label(tr("Appearance & music"), systemImage: "paintpalette")
             }
 
             Menu {
-                Toggle("Retour haptique", isOn: $settings.haptics)
-                Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
-                Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
+                Toggle(tr("Haptic feedback"), isOn: $settings.haptics)
+                Toggle(tr("Animate new screenshots"), isOn: $settings.animateArrivals)
+                Toggle(tr("Launch at login"), isOn: $settings.launchAtLogin)
             } label: {
-                Label("Comportement", systemImage: "gearshape")
+                Label(tr("Behavior"), systemImage: "gearshape")
             }
 
             Divider()
 
             if case .available(let version, let url) = updates.state {
-                Button("⬆︎ Télécharger la version \(version)") { NSWorkspace.shared.open(url) }
+                Button(tr("⬆︎ Download version %@", version)) { NSWorkspace.shared.open(url) }
             }
             Menu {
-                Button(updates.state == .checking ? "Recherche en cours…" : "Rechercher des mises à jour…") {
+                Button(updates.state == .checking ? tr("Checking…") : tr("Check for updates…")) {
                     updates.check(manual: true)
                 }
                 .disabled(updates.state == .checking)
-                Toggle("Vérifier automatiquement", isOn: $settings.autoUpdateCheck)
+                Toggle(tr("Check automatically"), isOn: $settings.autoUpdateCheck)
             } label: {
-                Label("Version \(updates.currentVersion)", systemImage: "arrow.triangle.2.circlepath")
+                Label(tr("Version %@", updates.currentVersion), systemImage: "arrow.triangle.2.circlepath")
             }
 
             Divider()
-            Button("Quitter NotchLoft") { NSApp.terminate(nil) }
+            Picker(tr("Language"), selection: $settings.language) {
+                ForEach(AppLanguage.allCases) { Text($0.label).tag($0.rawValue) }
+            }
+            Divider()
+            Button(tr("Quit NotchLoft")) { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
         } label: {
             Image(nsImage: MenuBarIcon.make(badge: updates.hasUpdate))

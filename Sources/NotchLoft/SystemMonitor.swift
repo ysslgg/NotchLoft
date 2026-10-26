@@ -26,7 +26,7 @@ final class SystemMonitor: ObservableObject {
         var diskFreeGB: Double = 0
         var diskTotalGB: Double = 0
         var cpuHistory: [Double] = []
-        var thermal = "Normale"
+        var thermal = tr("Normal")
     }
 
     @Published private(set) var stats = Stats()
@@ -82,10 +82,10 @@ final class SystemMonitor: ObservableObject {
             if trackHistory { n.cpuHistory = Array((n.cpuHistory + [c]).suffix(40)) }
         }
         switch ProcessInfo.processInfo.thermalState {
-        case .nominal: n.thermal = "Normale"
-        case .fair: n.thermal = "Moyenne"
-        case .serious: n.thermal = "Élevée"
-        case .critical: n.thermal = "Critique"
+        case .nominal: n.thermal = tr("Normal")
+        case .fair: n.thermal = tr("Fair")
+        case .serious: n.thermal = tr("Serious")
+        case .critical: n.thermal = tr("Critical")
         @unknown default: n.thermal = "—"
         }
         readMemory(into: &n)

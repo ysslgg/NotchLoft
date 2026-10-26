@@ -62,7 +62,7 @@ final class UpdateChecker: ObservableObject {
     private func finish(_ release: Release?, manual: Bool) {
         guard let release else {
             state = .failed
-            if manual { alert("Impossible de vérifier les mises à jour", "Vérifie ta connexion Internet et réessaie.") }
+            if manual { alert(tr("Couldn't check for updates"), tr("Check your Internet connection and try again.")) }
             return
         }
         if Self.isNewer(release.version, than: currentVersion) {
@@ -70,16 +70,16 @@ final class UpdateChecker: ObservableObject {
             state = .available(version: release.version, url: url)
             if manual {
                 let a = NSAlert()
-                a.messageText = "NotchLoft \(release.version) est disponible"
-                a.informativeText = "Tu utilises la version \(currentVersion)."
-                a.addButton(withTitle: "Télécharger")
-                a.addButton(withTitle: "Plus tard")
+                a.messageText = tr("NotchLoft %@ is available", release.version)
+                a.informativeText = tr("You are using version %@.", currentVersion)
+                a.addButton(withTitle: tr("Download"))
+                a.addButton(withTitle: tr("Later"))
                 NSApp.activate(ignoringOtherApps: true)
                 if a.runModal() == .alertFirstButtonReturn { NSWorkspace.shared.open(url) }
             }
         } else {
             state = .upToDate
-            if manual { alert("NotchLoft est à jour", "Tu utilises la dernière version (\(currentVersion)).") }
+            if manual { alert(tr("NotchLoft is up to date"), tr("You are using the latest version (%@).", currentVersion)) }
         }
     }
 

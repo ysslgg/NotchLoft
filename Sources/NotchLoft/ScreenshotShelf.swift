@@ -127,9 +127,9 @@ final class ScreenshotShelf: ObservableObject {
               let rep = NSBitmapImageRep(data: data), rep.pixelsWide >= 200, rep.pixelsHigh >= 120,
               let png = rep.representation(using: .png, properties: [:]) else { return }
         let f = DateFormatter()
-        f.locale = Locale(identifier: "fr_FR")
-        f.dateFormat = "yyyy-MM-dd 'à' HH.mm.ss"
-        let url = Self.captureDirectory.appendingPathComponent("Capture presse-papier \(f.string(from: Date())).png")
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
+        let url = Self.captureDirectory.appendingPathComponent("Clipboard capture \(f.string(from: Date())).png")
         try? png.write(to: url)
         scan()
     }

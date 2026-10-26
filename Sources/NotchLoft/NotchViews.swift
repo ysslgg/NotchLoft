@@ -129,6 +129,8 @@ struct NotchRootView: View {
             .animation(.easeOut(duration: 0.25), value: g)
         }
         .frame(width: NotchGeometry.panelSize.width, height: NotchGeometry.panelSize.height, alignment: .top)
+        // Changer de langue reconstruit l'interface avec les nouveaux textes.
+        .id(settings.language.rawValue)
     }
 }
 
@@ -138,7 +140,7 @@ private struct MusicPlaceholder: View {
         VStack(spacing: 6) {
             Spacer().frame(height: ui.geometry.notchHeight)
             Image(systemName: "music.note").font(.system(size: 22)).foregroundStyle(.white.opacity(0.35))
-            Text("Aucune lecture en cours").font(.system(size: 12)).foregroundStyle(.white.opacity(0.5))
+            Text(tr("Nothing is playing")).font(.system(size: 12)).foregroundStyle(.white.opacity(0.5))
             Spacer()
         }
     }
@@ -511,6 +513,6 @@ private struct SourceButton: View {
         .buttonStyle(PressStyle())
         .hoverAlways { hover.on = $0 }
         .animation(.easeOut(duration: 0.15), value: hover.on)
-        .help("Ouvrir l'app")
+        .help(tr("Open app"))
     }
 }

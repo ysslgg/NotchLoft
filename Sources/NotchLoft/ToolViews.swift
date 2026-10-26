@@ -64,12 +64,12 @@ struct ClipboardPage: View {
         VStack(spacing: 0) {
             Spacer().frame(height: ui.geometry.notchHeight + 2)
             HStack {
-                Text("Presse-papier")
+                Text(tr("Clipboard"))
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.55))
                 Spacer()
                 if store.items.contains(where: { !$0.pinned }) {
-                    Button("Effacer") { store.clearUnpinned() }
+                    Button(tr("Clear")) { store.clearUnpinned() }
                         .buttonStyle(PressStyle())
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(.white.opacity(0.55))
@@ -82,7 +82,7 @@ struct ClipboardPage: View {
                 Spacer()
                 VStack(spacing: 6) {
                     Image(systemName: "doc.on.clipboard").font(.system(size: 20)).foregroundStyle(.white.opacity(0.35))
-                    Text("Copie du texte : il apparaîtra ici.")
+                    Text(tr("Copy some text and it will show up here."))
                         .font(.system(size: 12)).foregroundStyle(.white.opacity(0.5))
                 }
                 Spacer()
@@ -127,7 +127,7 @@ private struct ClipRow: View {
             .onTapGesture { store.copy(item) }
 
             if store.copiedID == item.id {
-                Text("Copié ✓").font(.system(size: 11, weight: .semibold)).foregroundStyle(accent)
+                Text(tr("Copied ✓")).font(.system(size: 11, weight: .semibold)).foregroundStyle(accent)
             } else if hover.on {
                 miniButton(item.pinned ? "pin.slash" : "pin") { store.togglePin(item) }
                 miniButton("trash") { store.remove(item) }
@@ -244,8 +244,8 @@ struct ShelfPage: View {
 
             if shelf.shots.isEmpty {
                 Text(shelf.accessDenied
-                     ? "Autorise l'accès au dossier des captures (Réglages Système → Confidentialité)."
-                     : "Tes dernières captures d'écran s'accrochent ici.")
+                     ? tr("Allow access to the screenshots folder (System Settings → Privacy & Security).")
+                     : tr("Your latest screenshots hang here."))
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.5))
                     .multilineTextAlignment(.center)
@@ -284,12 +284,12 @@ private struct HangingShot: View {
 
     private var tilt: Double { [-2.2, 1.6, -1.0, 2.4, -1.8][index % 5] }
 
-    private static let formatter: RelativeDateTimeFormatter = {
+    private static func relative(_ date: Date) -> String {
         let f = RelativeDateTimeFormatter()
-        f.locale = Locale(identifier: "fr_FR")
+        f.locale = Locale(identifier: Settings.shared.language.rawValue)
         f.unitsStyle = .short
-        return f
-    }()
+        return f.localizedString(for: date, relativeTo: Date())
+    }
 
     private static func clock(_ t: Double) -> String {
         let s = Int(t.rounded())
@@ -337,10 +337,10 @@ private struct HangingShot: View {
                     .buttonStyle(PressStyle())
                     .offset(x: -4, y: 11)
                     .transition(.scale(scale: 0.5).combined(with: .opacity))
-                    .help("Retirer de l'étendoir")
+                    .help(tr("Remove from shelf"))
                 }
             }
-            Text(Self.formatter.localizedString(for: shot.date, relativeTo: Date()))
+            Text(Self.relative(shot.date))
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
                 .lineLimit(1)
@@ -354,20 +354,20 @@ private struct HangingShot: View {
         .onTapGesture { NSWorkspace.shared.open(shot.url) }
         .onDrag { NSItemProvider(contentsOf: shot.url) ?? NSItemProvider() }
         .contextMenu {
-            Button("Copier l'image") {
+            Button(tr("Copy image")) {
                 if let img = NSImage(contentsOf: shot.url) {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.writeObjects([img])
                     shelf.ignoreCurrentPasteboard()
                 }
             }
-            Button("Afficher dans le Finder") { NSWorkspace.shared.activateFileViewerSelecting([shot.url]) }
-            Button("Retirer de l'étendoir") { shelf.dismiss(shot) }
-            Button("Mettre à la corbeille") {
+            Button(tr("Show in Finder")) { NSWorkspace.shared.activateFileViewerSelecting([shot.url]) }
+            Button(tr("Remove from shelf")) { shelf.dismiss(shot) }
+            Button(tr("Move to Trash")) {
                 NSWorkspace.shared.recycle([shot.url]) { _, _ in DispatchQueue.main.async { shelf.dismiss(shot) } }
             }
         }
-        .help("Clic : ouvrir · Glisser : déposer ailleurs")
+        .help(tr("Click: open · Drag: drop elsewhere"))
     }
 }
 

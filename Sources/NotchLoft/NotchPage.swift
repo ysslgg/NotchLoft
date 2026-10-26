@@ -18,11 +18,11 @@ enum NotchPage: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .music: "Musique"
-        case .clipboard: "Presse-papier"
-        case .shelf: "Étendoir"
-        case .files: "Dépôt de fichiers"
-        case .system: "Batterie et système"
+        case .music: tr("Music")
+        case .clipboard: tr("Clipboard")
+        case .shelf: tr("Shelf")
+        case .files: tr("File tray")
+        case .system: tr("Battery & system")
         }
     }
 

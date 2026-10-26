@@ -66,11 +66,11 @@ struct FilesPage: View {
                     .frame(width: size.width, height: areaH - 24, alignment: .topLeading)
 
                     HStack {
-                        Text("\(n) élément\(n > 1 ? "s" : "") · glisse-les où tu veux")
+                        Text(n == 1 ? tr("1 item · drag it anywhere") : tr("%d items · drag them anywhere", n))
                             .font(.system(size: 10, weight: .medium))
                             .foregroundStyle(.white.opacity(0.45))
                         Spacer()
-                        Button("Tout retirer") { tray.clear() }
+                        Button(tr("Remove all")) { tray.clear() }
                             .buttonStyle(PressStyle())
                             .font(.system(size: 10, weight: .semibold))
                             .foregroundStyle(.white.opacity(0.55))
@@ -110,10 +110,10 @@ struct FilesPage: View {
             Image(systemName: "tray.and.arrow.down")
                 .font(.system(size: 24, weight: .light))
                 .foregroundStyle(.white.opacity(target.on ? 0.9 : 0.4))
-            Text("Glisse des fichiers ou des dossiers ici")
+            Text(tr("Drop files or folders here"))
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.white.opacity(0.6))
-            Text("Ils restent accrochés jusqu'à ce que tu les reprennes.")
+            Text(tr("They stay hanging until you take them back."))
                 .font(.system(size: 10.5))
                 .foregroundStyle(.white.opacity(0.4))
         }
@@ -158,7 +158,7 @@ private struct FileCard: View {
                     .buttonStyle(PressStyle())
                     .offset(x: -3, y: 12)
                     .transition(.scale(scale: 0.5).combined(with: .opacity))
-                    .help("Retirer du dépôt (le fichier reste intact)")
+                    .help(tr("Remove from tray (the file stays untouched)"))
                 }
             }
             Text(item.name)
@@ -174,12 +174,12 @@ private struct FileCard: View {
         .onTapGesture { NSWorkspace.shared.open(item.url) }
         .onDrag { NSItemProvider(contentsOf: item.url) ?? NSItemProvider() }
         .contextMenu {
-            Button("Afficher dans le Finder") { NSWorkspace.shared.activateFileViewerSelecting([item.url]) }
-            Button("Copier le chemin") {
+            Button(tr("Show in Finder")) { NSWorkspace.shared.activateFileViewerSelecting([item.url]) }
+            Button(tr("Copy path")) {
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(item.path, forType: .string)
             }
-            Button("Retirer du dépôt") { tray.remove(item) }
+            Button(tr("Remove from tray")) { tray.remove(item) }
         }
         .help(item.path)
     }
@@ -192,10 +192,10 @@ enum SystemMetric: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .battery: "Batterie"
-        case .cpu: "Processeur"
-        case .memory: "Mémoire"
-        case .disk: "Disque"
+        case .battery: tr("Battery")
+        case .cpu: tr("CPU")
+        case .memory: tr("Memory")
+        case .disk: tr("Disk")
         }
     }
 }
@@ -230,7 +230,7 @@ struct SystemPage: View {
                     gauge(m)
                         .contentShape(Rectangle())
                         .onTapGesture { withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { settings.systemHero = m.rawValue } }
-                        .help("Afficher « \(m.title) » en grand")
+                        .help(tr("Show “%@” in large", m.title))
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -258,10 +258,10 @@ struct SystemPage: View {
 
     private func detail(_ m: SystemMetric) -> String {
         switch m {
-        case .battery: return monitor.battery.isCharging ? "En charge" : (monitor.battery.isPluggedIn ? "Branchée" : "Sur batterie")
+        case .battery: return monitor.battery.isCharging ? tr("Charging") : (monitor.battery.isPluggedIn ? tr("Plugged in") : tr("On battery"))
         case .cpu: return String(format: "%.0f %%", monitor.cpu * 100)
-        case .memory: return String(format: "%.1f / %.0f Go", locale: Locale(identifier: "fr_FR"), monitor.memoryUsedGB, monitor.memoryTotalGB)
-        case .disk: return String(format: "%.0f Go libres", monitor.diskFreeGB)
+        case .memory: return tr("%.1f / %.0f GB", monitor.memoryUsedGB, monitor.memoryTotalGB)
+        case .disk: return tr("%.0f GB free", monitor.diskFreeGB)
         }
     }
 
@@ -278,15 +278,15 @@ struct SystemPage: View {
     }
 
     private func duration(_ minutes: Int) -> String {
-        minutes >= 60 ? "\(minutes / 60) h \(String(format: "%02d", minutes % 60))" : "\(minutes) min"
+        minutes >= 60 ? tr("%d h %02d", minutes / 60, minutes % 60) : tr("%d min", minutes)
     }
 
     private var batteryStatus: String {
         let b = monitor.battery
-        if b.isFull && b.isPluggedIn { return "Chargée · branchée" }
-        if b.isCharging { return "En charge" + (b.minutes.map { " · \(duration($0)) avant 100 %" } ?? "") }
-        if b.isPluggedIn { return "Branchée" }
-        return "Sur batterie" + (b.minutes.map { " · \(duration($0)) restantes" } ?? "")
+        if b.isFull && b.isPluggedIn { return tr("Charged · plugged in") }
+        if b.isCharging { return tr("Charging") + (b.minutes.map { " · " + tr("%@ until full", duration($0)) } ?? "") }
+        if b.isPluggedIn { return tr("Plugged in") }
+        return tr("On battery") + (b.minutes.map { " · " + tr("%@ left", duration($0)) } ?? "")
     }
 
     // MARK: Info en grand
@@ -295,20 +295,20 @@ struct SystemPage: View {
         switch hero {
         case .battery: batteryHero
         case .cpu:
-            bigNumber(String(format: "%.0f %%", monitor.cpu * 100), "Processeur · charge", color: color(.cpu)) {
+            bigNumber(String(format: "%.0f %%", monitor.cpu * 100), tr("CPU · load"), color: color(.cpu)) {
                 VStack(alignment: .trailing, spacing: 3) {
                     Sparkline(values: monitor.cpuHistory, color: color(.cpu)).frame(width: 150, height: 28)
-                    Text("Pression thermique : \(monitor.thermal)")
+                    Text(tr("Thermal pressure: %@", monitor.thermal))
                         .font(.system(size: 10)).foregroundStyle(.white.opacity(0.45))
                 }
             }
         case .memory:
             bigNumber(String(format: "%.0f %%", monitor.memoryUsed * 100),
-                      String(format: "%.1f sur %.0f Go utilisés", locale: Locale(identifier: "fr_FR"), monitor.memoryUsedGB, monitor.memoryTotalGB),
+                      tr("%.1f of %.0f GB used", monitor.memoryUsedGB, monitor.memoryTotalGB),
                       color: color(.memory)) { bar(monitor.memoryUsed, color(.memory)) }
         case .disk:
-            bigNumber(String(format: "%.0f Go", monitor.diskFreeGB),
-                      String(format: "libres sur %.0f Go · %.0f %% utilisé", monitor.diskTotalGB, monitor.diskUsed * 100),
+            bigNumber(tr("%.0f GB", monitor.diskFreeGB),
+                      tr("free of %.0f GB · %.0f%% used", monitor.diskTotalGB, monitor.diskUsed * 100),
                       color: color(.disk)) { bar(monitor.diskUsed, color(.disk)) }
         }
     }
@@ -355,13 +355,13 @@ struct SystemPage: View {
             Spacer(minLength: 0)
             VStack(alignment: .trailing, spacing: 3) {
                 if let h = b.health {
-                    Label("Santé \(h) %", systemImage: "heart.fill")
+                    Label(tr("Health %d%%", h), systemImage: "heart.fill")
                         .labelStyle(.titleAndIcon)
                         .font(.system(size: 10.5, weight: .medium))
                         .foregroundStyle(.white.opacity(0.6))
                 }
                 if let c = b.cycles {
-                    Text("\(c) cycles")
+                    Text(tr("%d cycles", c))
                         .font(.system(size: 10.5, weight: .medium))
                         .foregroundStyle(.white.opacity(0.45))
                 }

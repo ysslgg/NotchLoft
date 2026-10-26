@@ -1,96 +1,99 @@
 <div align="center">
 
-<img src="Resources/AppIcon-1024.png" width="128" alt="Icône de NotchLoft">
+**English · [Français](README.fr.md)**
+
+<img src="Resources/AppIcon-1024.png" width="128" alt="NotchLoft icon">
 
 # NotchLoft
 
-**La boîte à outils cachée dans l'encoche de ton MacBook.**
+**The toolbox hidden in your MacBook's notch.**
 
-Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, batterie et système : survole l'encoche, tout est là.
+Now playing, clipboard history, a screenshot shelf, a file tray, battery and system stats: hover the notch and everything is there.
 
-[![Télécharger NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
+[![Download NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20Download-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
-![Dernière version](https://img.shields.io/github/v/release/ysslgg/NotchLoft?color=8A2BE2&label=version)
-![Téléchargements](https://img.shields.io/github/downloads/ysslgg/NotchLoft/total?color=ec4899&label=t%C3%A9l%C3%A9chargements)
+![Latest version](https://img.shields.io/github/v/release/ysslgg/NotchLoft?color=8A2BE2&label=version)
+![Downloads](https://img.shields.io/github/downloads/ysslgg/NotchLoft/total?color=ec4899&label=downloads)
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-444?logo=apple&logoColor=white)
-![Apple Silicon et Intel](https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-444)
+![Apple Silicon and Intel](https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-444)
 
 <br>
 
-<img src="docs/hover.png" width="460" alt="La musique en cours, au survol de l'encoche">
+<img src="docs/hover.png" width="460" alt="Now playing, when hovering the notch">
 
-<sub>Musique</sub>
+<sub>Music</sub>
 
-<img src="docs/shelf.png" width="460" alt="L'étendoir : les dernières captures d'écran accrochées à une corde à linge">
+<img src="docs/shelf.png" width="460" alt="The shelf: your latest screenshots hanging on a clothesline">
 
-<sub>Étendoir à captures d'écran</sub>
+<sub>Screenshot shelf</sub>
 
-<img src="docs/clipboard.png" width="400" alt="L'historique du presse-papier">
+<img src="docs/clipboard.png" width="400" alt="Clipboard history">
 
-<sub>Presse-papier</sub>
+<sub>Clipboard</sub>
 
-<img src="docs/files.png" width="460" alt="Le dépôt de fichiers : fichiers accrochés à la corde à linge">
+<img src="docs/files.png" width="460" alt="The file tray: files hanging on the clothesline">
 
-<sub>Dépôt de fichiers</sub>
+<sub>File tray</sub>
 
-<img src="docs/system.png" width="420" alt="Batterie et système : niveau de batterie, processeur, mémoire et disque">
+<img src="docs/system.png" width="420" alt="Battery and system: battery level, CPU, memory and disk">
 
-<sub>Batterie et système</sub>
+<sub>Battery & system</sub>
 
 <br>
 
-<img src="docs/compact.png" width="460" alt="L'encoche au repos : pochette à gauche, visualiseur à droite">
+<img src="docs/compact.png" width="460" alt="The idle notch: artwork on the left, visualizer on the right">
 
-<sub>Au repos</sub>
+<sub>Idle</sub>
 
 </div>
 
-## Fonctionnalités
+## Features
 
-### 🎵 Musique
-- Lit le « Now Playing » du système : Apple Music, Spotify, ton navigateur…
-- **Au repos**, l'encoche s'élargit juste un peu : pochette à gauche (avec une bague de progression), visualiseur animé à droite (les barres suivent le son, graves à gauche et aigus à droite), symbole pause en pause. Rien ne s'affiche quand rien ne joue.
-- **Au survol** : pochette, titre et artiste (qui défilent s'ils sont longs), barre de progression à cliquer ou glisser, temps écoulé et restant, précédent / lecture-pause / suivant. Un clic sur l'icône de l'app ouvre Spotify, Musique…
-- Couleurs d'accent tirées de la pochette, ou teintes fixes au choix.
+### 🎵 Music
+- Reads the system "Now Playing": Apple Music, Spotify, your browser…
+- **Idle**, the notch widens just a little: artwork on the left (with a progress ring), animated visualizer on the right (the bars follow the sound, bass on the left and treble on the right), a pause symbol when paused. Nothing shows when nothing is playing.
+- **On hover**: artwork, title and artist (scrolling when long), a progress bar you can click or drag, elapsed and remaining time, previous / play-pause / next. Click the source app's icon to open Spotify, Music…
+- Accent colors taken from the artwork, or a fixed color of your choice.
 
-### 📋 Presse-papier
-- Historique du texte copié (30 éléments), un clic remet l'élément dans le presse-papier.
-- Épingle les éléments importants : ils restent, même après un redémarrage.
-- Les copies de mots de passe (1Password et autres gestionnaires) ne sont jamais enregistrées.
+### 📋 Clipboard
+- History of copied text (30 items); one click puts an item back on the clipboard.
+- Pin the important items: they stay, even after a restart.
+- Passwords copied from password managers (1Password and others) are never recorded.
 
-### 🧷 Étendoir à captures d'écran
-- Tes dernières captures (jusqu'à 30) s'accrochent à une corde à linge, avec leurs pinces. Fais défiler à gauche ou à droite pour voir les autres.
-- **Tout y passe** : captures d'écran, **enregistrements d'écran** (avec leur durée), et captures copiées dans le presse-papiers (⌃⇧⌘3 / ⌃⇧⌘4).
-- **Animation** : à chaque nouvelle capture, la miniature s'envole vers l'encoche, qui s'ouvre un instant pour l'accrocher.
-- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier, afficher dans le Finder ou mettre à la corbeille.
+### 🧷 Screenshot shelf
+- Your latest captures (up to 30) hang on a clothesline with clothespins. Scroll left or right to see the others.
+- **Everything goes in**: screenshots, **screen recordings** (with their duration), and captures copied to the clipboard (⌃⇧⌘3 / ⌃⇧⌘4).
+- **Animation**: each new capture flies to the notch, which opens for a moment to hang it up.
+- Click to open, **drag and drop** into any app, a **cross** on hover to remove a capture from the shelf (the file stays untouched), right-click to copy, show in Finder or move to the Trash.
 
-### 📥 Dépôt de fichiers
-- Glisse un fichier ou un dossier sur l'encoche : elle s'ouvre toute seule et il s'accroche à la corde à linge.
-- Reprends-le plus tard par glisser-déposer vers n'importe quelle app. Rien n'est copié ni déplacé, ce sont des raccourcis vers tes fichiers.
-- Clic pour ouvrir, croix pour retirer, clic droit pour l'afficher dans le Finder ou copier son chemin.
+### 📥 File tray
+- Drag a file or folder onto the notch: it opens by itself and the item hangs on the clothesline.
+- Take it back later by dragging it into any app. Nothing is copied or moved: these are shortcuts to your files.
+- Click to open, cross to remove, right-click to show in Finder or copy its path.
 
-### 🔋 Batterie et système
-- Niveau, état de charge, temps restant, santé et cycles de la batterie, plus processeur, mémoire et disque.
-- **Tu choisis ce qui s'affiche en grand** : clique sur une jauge pour la mettre en avant (ou utilise le menu ♪). Le processeur y ajoute sa courbe en direct.
+### 🔋 Battery & system
+- Battery level, charging state, time remaining, health and cycles, plus CPU, memory and disk.
+- **You choose what is shown large**: click a gauge to bring it forward (or use the ♪ menu). The CPU adds a live graph.
 
-### Et aussi
-- **Onglets** dans les ailes de l'encoche pour passer d'un outil à l'autre.
-- **Personnalisable** depuis l'icône de la barre des menus : page à l'ouverture (par défaut ou la dernière utilisée), activer ou non chaque outil, visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage, vérification des mises à jour.
-- **Discret** : aucune icône dans le Dock, et l'encoche se masque au repos dans les apps en plein écran (elle s'ouvre toujours quand tu survoles l'encoche). Réglable dans le menu ♪.
-- **Pour tous les Mac** : sur un Mac sans encoche, une encoche simulée prend le relais.
+### And also
+- **Tabs** in the notch's wings to switch between tools.
+- **English or French**: the interface is in English by default; switch to French from the ♪ menu → Language.
+- **Customizable** from the menu bar icon: page on open (a fixed page or the last used), enable or disable each tool, visualizer, progress ring, blurred background, haptic feedback, accent color, idle width, hide after a pause, launch at login, update checks.
+- **Discreet**: no Dock icon, and the idle notch hides in full-screen apps (it still opens when you hover the notch). Adjustable in the ♪ menu.
+- **For every Mac**: on a Mac without a notch, a simulated notch takes over.
 
 ## Installation
 
-1. Télécharge **NotchLoft.dmg** avec le bouton ci-dessus.
-2. Ouvre le DMG et glisse **NotchLoft** dans **Applications**.
-3. Au premier lancement, macOS affiche un avertissement car l'app n'est pas notarisée. Ouvre **Réglages Système → Confidentialité et sécurité**, descends jusqu'à NotchLoft et clique sur **Ouvrir quand même**.
-4. Pour l'étendoir, autorise l'accès au dossier des captures (Bureau par défaut) quand macOS te le demande.
+1. Download **NotchLoft.dmg** with the button above.
+2. Open the DMG and drag **NotchLoft** into **Applications**.
+3. On first launch, macOS shows a warning because the app is not notarized. Open **System Settings → Privacy & Security**, scroll down to NotchLoft and click **Open Anyway**.
+4. For the shelf, allow access to the screenshots folder (Desktop by default) when macOS asks.
 
-## Limites
+## Limitations
 
-- Le presse-papier ne garde que le texte, pas les images ni les fichiers.
-- L'étendoir ne voit pas les captures envoyées directement vers une app (Mail, Messages…) : elles n'existent ni en fichier ni dans le presse-papiers.
-- Le visualiseur suit le son du Mac quand tu l'autorises (macOS 14.2 ou plus) ; sans autorisation, il reste une animation décorative. Il ne voit pas le son protégé par DRM.
-- L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.
-- Les informations de lecture dépendent de ce que l'app transmet au système : certains lecteurs n'envoient ni pochette ni durée.
-- Usage personnel uniquement, voir la [licence](LICENSE).
+- The clipboard keeps text only, not images or files.
+- The shelf can't see captures sent straight to an app (Mail, Messages…): they exist neither as a file nor on the clipboard.
+- The visualizer follows the Mac's sound when you allow it (macOS 14.2 or later); without permission it stays a decorative animation. It can't see DRM-protected audio.
+- The app is not notarized by Apple, hence the warning on first launch.
+- Playback info depends on what the app reports to the system: some players send neither artwork nor duration.
+- Personal use only, see the [license](LICENSE).

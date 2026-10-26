@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key><string>fr</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
     <key>CFBundleExecutable</key><string>NotchLoft</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleIdentifier</key><string>com.notchloft.app</string>
@@ -15,10 +15,11 @@
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSAudioCaptureUsageDescription</key><string>NotchLoft écoute le son du Mac, en lecture seule, pour animer le visualiseur. Rien n'est enregistré ni envoyé.</string>
-    <key>NSDesktopFolderUsageDescription</key><string>NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.</string>
-    <key>NSDocumentsFolderUsageDescription</key><string>NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.</string>
-    <key>NSDownloadsFolderUsageDescription</key><string>NotchLoft surveille le dossier de tes captures d'écran pour les accrocher à l'étendoir. Rien n'est envoyé ni copié.</string>
-    <key>NSHumanReadableCopyright</key><string>© NotchLoft. Tous droits réservés.</string>
+    <key>NSAudioCaptureUsageDescription</key><string>NotchLoft listens to your Mac's sound, read-only, to animate the visualizer. Nothing is recorded or sent.</string>
+    <key>NSDesktopFolderUsageDescription</key><string>NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.</string>
+    <key>NSDocumentsFolderUsageDescription</key><string>NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.</string>
+    <key>NSDownloadsFolderUsageDescription</key><string>NotchLoft watches your screenshots folder to hang them on the shelf. Nothing is sent or copied.</string>
+    <key>NSHumanReadableCopyright</key><string>© NotchLoft. All rights reserved.</string>
+    <key>CFBundleLocalizations</key><array><string>en</string><string>fr</string></array>
 </dict>
 </plist>

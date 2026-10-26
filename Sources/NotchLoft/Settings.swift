@@ -6,12 +6,12 @@ enum AccentChoice: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var label: String {
         switch self {
-        case .auto: "Selon la pochette"
-        case .pink: "Rose"
-        case .blue: "Bleu"
-        case .green: "Vert"
+        case .auto: tr("From artwork")
+        case .pink: tr("Pink")
+        case .blue: tr("Blue")
+        case .green: tr("Green")
         case .orange: "Orange"
-        case .white: "Blanc"
+        case .white: tr("White")
         }
     }
     var color: Color? {
@@ -31,9 +31,9 @@ enum CompactWidth: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var label: String {
         switch self {
-        case .narrow: "Étroite"
-        case .normal: "Normale"
-        case .wide: "Large"
+        case .narrow: tr("Narrow")
+        case .normal: tr("Normal")
+        case .wide: tr("Wide")
         }
     }
     var side: CGFloat {
@@ -50,9 +50,9 @@ enum IdleDelay: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var label: String {
         switch self {
-        case .never: "Jamais"
-        case .s15: "15 secondes"
-        case .s45: "45 secondes"
+        case .never: tr("Never")
+        case .s15: tr("15 seconds")
+        case .s45: tr("45 seconds")
         case .min2: "2 minutes"
         }
     }
@@ -87,6 +87,8 @@ final class Settings: ObservableObject {
     @Published var hideInFullscreen: Bool { didSet { d.set(hideInFullscreen, forKey: "hideInFullscreen") } }
     /// Page affichée à l'ouverture : « last » (la dernière utilisée) ou le nom d'une page.
     @Published var openPage: String { didSet { d.set(openPage, forKey: "openPage") } }
+    /// Langue de l'app : anglais par défaut, français en option.
+    @Published var language: AppLanguage { didSet { d.set(language.rawValue, forKey: "language") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -99,7 +101,7 @@ final class Settings: ObservableObject {
             do {
                 if launchAtLogin { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             } catch {
-                NSLog("NotchLoft: lancement au démarrage impossible: \(error)")
+                NSLog("NotchLoft: could not change launch at login: \(error)")
                 launchAtLogin = SMAppService.mainApp.status == .enabled
             }
         }
@@ -120,6 +122,7 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        language = AppLanguage(rawValue: d.string(forKey: "language") ?? "") ?? .en
         openPage = d.string(forKey: "openPage") ?? "last"
         hideInFullscreen = bool("hideInFullscreen")
         reactiveVisualizer = bool("reactiveVisualizer")
