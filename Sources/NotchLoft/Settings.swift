@@ -116,7 +116,7 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
-        reactiveVisualizer = d.object(forKey: "reactiveVisualizer") as? Bool ?? false
+        reactiveVisualizer = bool("reactiveVisualizer")
         systemHero = d.string(forKey: "systemHero") ?? "battery"
         enableFiles = bool("enableFiles")
         enableSystem = bool("enableSystem")

@@ -49,7 +49,7 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, bat
 
 ### 🎵 Musique
 - Lit le « Now Playing » du système : Apple Music, Spotify, ton navigateur…
-- **Au repos**, l'encoche s'élargit juste un peu : pochette à gauche (avec une bague de progression), visualiseur animé à droite, symbole pause en pause. Rien ne s'affiche quand rien ne joue.
+- **Au repos**, l'encoche s'élargit juste un peu : pochette à gauche (avec une bague de progression), visualiseur animé à droite (les barres suivent le son, graves à gauche et aigus à droite), symbole pause en pause. Rien ne s'affiche quand rien ne joue.
 - **Au survol** : pochette, titre et artiste (qui défilent s'ils sont longs), barre de progression à cliquer ou glisser, temps écoulé et restant, précédent / lecture-pause / suivant. Un clic sur l'icône de l'app ouvre Spotify, Musique…
 - Couleurs d'accent tirées de la pochette, ou teintes fixes au choix.
 
@@ -90,7 +90,7 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, bat
 
 - Le presse-papier ne garde que le texte, pas les images ni les fichiers.
 - L'étendoir ne voit pas les captures envoyées directement vers une app (Mail, Messages…) : elles n'existent ni en fichier ni dans le presse-papiers.
-- Le visualiseur est purement décoratif : il ne capte pas le son.
+- Le visualiseur suit le son du Mac quand tu l'autorises (macOS 14.2 ou plus) ; sans autorisation, il reste une animation décorative. Il ne voit pas le son protégé par DRM.
 - L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.
 - Les informations de lecture dépendent de ce que l'app transmet au système : certains lecteurs n'envoient ni pochette ni durée.
 - Usage personnel uniquement, voir la [licence](LICENSE).
