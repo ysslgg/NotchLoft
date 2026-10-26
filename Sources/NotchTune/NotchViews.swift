@@ -34,9 +34,9 @@ struct NotchRootView: View {
             Color.clear
             ZStack(alignment: .top) {
                 Color.black
-                LinearGradient(colors: [model.accent.opacity(0), model.accent.opacity(0.24)],
+                LinearGradient(colors: [model.accent.opacity(0), model.accent.opacity(0.30)],
                                startPoint: .top, endPoint: .bottom)
-                    .opacity(ui.expanded ? 1 : 0.4)
+                    .opacity(ui.expanded ? 1 : 0.35)
 
                 CompactContent(model: model, geometry: g)
                     .frame(width: g.compactSize.width, height: g.compactSize.height)
@@ -64,28 +64,36 @@ struct NotchRootView: View {
 
 // MARK: - Mode compact
 
+private final class HoverBox: ObservableObject {
+    @Published var on = false
+}
+
 private struct CompactContent: View {
     @ObservedObject var model: NowPlayingModel
     let geometry: NotchGeometry
 
     var body: some View {
         HStack(spacing: 0) {
-            ArtworkView(image: model.artwork, size: 20, radius: 5, accent: model.accent, halo: false)
+            ArtworkView(image: model.artwork, size: 20, radius: 5, accent: model.accent, halo: 0)
+                .opacity(model.isPlaying ? 1 : 0.55)
                 .padding(.leading, 9)
             Spacer(minLength: 0)
-            Group {
-                if model.isPlaying {
-                    VisualizerBars(color: model.accent, playing: true)
-                } else {
-                    Image(systemName: "pause.fill")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(model.accent)
-                }
+            ZStack {
+                VisualizerBars(color: model.accent, playing: model.isPlaying)
+                    .opacity(model.isPlaying ? 1 : 0)
+                    .scaleEffect(model.isPlaying ? 1 : 0.6)
+                Image(systemName: "pause.fill")
+                    .font(.system(size: 11, weight: .heavy))
+                    .foregroundStyle(model.accent)
+                    .opacity(model.isPlaying ? 0 : 1)
+                    .scaleEffect(model.isPlaying ? 0.6 : 1)
             }
+            .animation(.spring(response: 0.3, dampingFraction: 0.75), value: model.isPlaying)
             .frame(width: 18, height: 18)
             .padding(.trailing, 9)
         }
         .frame(maxHeight: .infinity)
+        .animation(.easeOut(duration: 0.25), value: model.isPlaying)
     }
 }
 
@@ -103,24 +111,27 @@ private struct ExpandedContent: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer().frame(height: ui.geometry.notchHeight + 2)
+            Spacer().frame(height: ui.geometry.notchHeight + 1)
 
             HStack(spacing: 12) {
-                ArtworkView(image: model.artwork, size: 46, radius: 9, accent: model.accent, halo: true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(model.title)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .lineLimit(1)
-                    Text(model.artist)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white.opacity(0.6))
-                        .lineLimit(1)
+                ArtworkView(image: model.artwork, size: 48, radius: 10, accent: model.accent,
+                            halo: model.isPlaying ? 0.7 : 0.15)
+                    .scaleEffect(model.isPlaying ? 1 : 0.92)
+                    .animation(.spring(response: 0.4, dampingFraction: 0.7), value: model.isPlaying)
+                VStack(alignment: .leading, spacing: 1) {
+                    MarqueeText(text: model.title, font: .systemFont(ofSize: 14, weight: .semibold),
+                                color: .white)
+                    MarqueeText(text: model.artist, font: .systemFont(ofSize: 12, weight: .regular),
+                                color: NSColor.white.withAlphaComponent(0.6))
                 }
-                Spacer(minLength: 0)
+                .id(model.title + "\u{1}" + model.artist)
+                .transition(.opacity.combined(with: .offset(y: 5)))
+                .frame(height: 38)
             }
+            .animation(.easeOut(duration: 0.28), value: model.title)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: 4)
+            Spacer(minLength: 2)
 
             ProgressBar(fraction: fraction, accent: model.accent,
                         onChange: { f in
@@ -137,21 +148,37 @@ private struct ExpandedContent: View {
             HStack {
                 Text(Self.format(shownPosition))
                 Spacer()
-                Text(Self.format(model.duration))
+                Text("-" + Self.format(max(0, model.duration - shownPosition)))
             }
             .font(.system(size: 10, weight: .medium).monospacedDigit())
             .foregroundStyle(.white.opacity(0.5))
 
-            HStack(spacing: 30) {
-                ControlButton(symbol: "backward.fill", size: 16) { model.previous() }
-                ControlButton(symbol: model.isPlaying ? "pause.fill" : "play.fill", size: 22) { model.togglePlayPause() }
-                ControlButton(symbol: "forward.fill", size: 16) { model.next() }
+            HStack(spacing: 18) {
+                ControlButton(symbol: "backward.fill", size: 15, diameter: 32, filled: false) { model.previous() }
+                ControlButton(symbol: model.isPlaying ? "pause.fill" : "play.fill", size: 16,
+                              diameter: 34, filled: true) { model.togglePlayPause() }
+                ControlButton(symbol: "forward.fill", size: 15, diameter: 32, filled: false) { model.next() }
             }
-            .frame(height: 30)
-            .padding(.top, 2)
-            .padding(.bottom, 12)
+            .frame(height: 34)
+            .padding(.top, 3)
+            .padding(.bottom, 10)
         }
         .padding(.horizontal, 30)
+        .background(alignment: .top) {
+            // Fond flou tiré de la pochette
+            if let img = model.artwork {
+                Image(nsImage: img)
+                    .resizable().aspectRatio(contentMode: .fill)
+                    .frame(width: 330, height: 160)
+                    .blur(radius: 34)
+                    .saturation(1.3)
+                    .opacity(0.26)
+                    .clipped()
+                    .id(model.title)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.35), value: model.title)
     }
 
     static func format(_ t: Double) -> String {
@@ -162,25 +189,90 @@ private struct ExpandedContent: View {
     }
 }
 
+/// Texte qui défile en boucle (avec fondu sur les bords) lorsqu'il dépasse la largeur disponible.
+private struct MarqueeText: View {
+    let text: String
+    let font: NSFont
+    let color: NSColor
+
+    private let gap: CGFloat = 36
+    private let speed: Double = 32
+
+    var body: some View {
+        GeometryReader { geo in
+            let textW = (text as NSString).size(withAttributes: [.font: font]).width.rounded(.up) + 1
+            if textW <= geo.size.width {
+                label.frame(width: geo.size.width, alignment: .leading)
+            } else {
+                TimelineView(.animation(minimumInterval: 1.0 / 60)) { ctx in
+                    let travel = textW + gap
+                    let cycle = travel / speed + 2.0
+                    let t = ctx.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: cycle)
+                    let x = -CGFloat(max(0, t - 1.0) * speed).clamped(to: 0...travel)
+                    HStack(spacing: gap) { label; label }
+                        .fixedSize()
+                        .offset(x: x)
+                        .frame(width: geo.size.width, alignment: .leading)
+                }
+                .mask(
+                    LinearGradient(stops: [.init(color: .clear, location: 0),
+                                           .init(color: .black, location: 0.04),
+                                           .init(color: .black, location: 0.92),
+                                           .init(color: .clear, location: 1)],
+                                   startPoint: .leading, endPoint: .trailing)
+                )
+            }
+        }
+        .frame(height: font.pointSize + 5)
+    }
+
+    private var label: some View {
+        Text(text).font(Font(font)).foregroundStyle(Color(nsColor: color)).lineLimit(1).fixedSize()
+    }
+}
+
+private extension CGFloat {
+    func clamped(to r: ClosedRange<CGFloat>) -> CGFloat { Swift.min(Swift.max(self, r.lowerBound), r.upperBound) }
+}
+
 private struct ProgressBar: View {
     let fraction: Double
     let accent: Color
     let onChange: (Double) -> Void
     let onEnd: (Double) -> Void
+    @StateObject private var hover = HoverBox()
+    @StateObject private var drag = HoverBox()
 
     var body: some View {
         GeometryReader { g in
+            let f = min(max(fraction, 0), 1)
+            let active = hover.on || drag.on
+            let h: CGFloat = active ? 7 : 4
             ZStack(alignment: .leading) {
-                Capsule().fill(.white.opacity(0.18)).frame(height: 4)
-                Capsule().fill(accent)
-                    .frame(width: max(4, g.size.width * min(max(fraction, 0), 1)), height: 4)
+                Capsule().fill(.white.opacity(0.18)).frame(height: h)
+                Capsule().fill(LinearGradient(colors: [accent.opacity(0.75), accent], startPoint: .leading, endPoint: .trailing))
+                    .frame(width: max(h, g.size.width * f), height: h)
+                Circle().fill(.white)
+                    .frame(width: 11, height: 11)
+                    .shadow(color: .black.opacity(0.4), radius: 2)
+                    .offset(x: min(max(0, g.size.width * f - 5.5), g.size.width - 11))
+                    .scaleEffect(active ? 1 : 0.01)
+                    .opacity(active ? 1 : 0)
             }
+            .animation(.spring(response: 0.25, dampingFraction: 0.8), value: active)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
+            .onHover { hover.on = $0 }
             .gesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { v in onChange(clamp(v.location.x / g.size.width)) }
-                    .onEnded { v in onEnd(clamp(v.location.x / g.size.width)) }
+                    .onChanged { v in
+                        drag.on = true
+                        onChange(clamp(v.location.x / g.size.width))
+                    }
+                    .onEnded { v in
+                        drag.on = false
+                        onEnd(clamp(v.location.x / g.size.width))
+                    }
             )
         }
     }
@@ -191,17 +283,37 @@ private struct ProgressBar: View {
 private struct ControlButton: View {
     let symbol: String
     let size: CGFloat
+    let diameter: CGFloat
+    let filled: Bool
     let action: () -> Void
+    @StateObject private var hover = HoverBox()
 
     var body: some View {
         Button(action: action) {
-            Image(systemName: symbol)
-                .font(.system(size: size, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(width: 34, height: 30)
-                .contentShape(Rectangle())
+            ZStack {
+                Circle()
+                    .fill(filled ? Color.white : Color.white.opacity(hover.on ? 0.16 : 0))
+                    .scaleEffect(filled && hover.on ? 1.08 : 1)
+                Image(systemName: symbol)
+                    .font(.system(size: size, weight: .bold))
+                    .foregroundStyle(filled ? Color.black : Color.white)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .frame(width: diameter, height: diameter)
+            .contentShape(Circle())
         }
         .buttonStyle(PressStyle())
+        .onHover { hover.on = $0 }
+        .animation(.easeOut(duration: 0.15), value: hover.on)
+    }
+}
+
+private struct PressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.6 : 1)
+            .scaleEffect(configuration.isPressed ? 0.88 : 1)
+            .animation(.spring(response: 0.2, dampingFraction: 0.65), value: configuration.isPressed)
     }
 }
 
@@ -212,24 +324,28 @@ private struct ArtworkView: View {
     let size: CGFloat
     let radius: CGFloat
     let accent: Color
-    let halo: Bool
+    /// Intensité du halo coloré (0 = aucun).
+    let halo: Double
 
     var body: some View {
-        Group {
+        ZStack {
+            Color.white.opacity(0.12)
+            Image(systemName: "music.note")
+                .font(.system(size: size * 0.42, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.6))
             if let image {
                 Image(nsImage: image).resizable().aspectRatio(contentMode: .fill)
-            } else {
-                ZStack {
-                    Color.white.opacity(0.12)
-                    Image(systemName: "music.note")
-                        .font(.system(size: size * 0.42, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.6))
-                }
+                    .id(ObjectIdentifier(image))
+                    .transition(.opacity)
             }
         }
+        .animation(.easeOut(duration: 0.3), value: image.map(ObjectIdentifier.init))
         .frame(width: size, height: size)
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-        .shadow(color: halo ? accent.opacity(0.65) : .clear, radius: halo ? 10 : 0)
+        .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous)
+            .strokeBorder(.white.opacity(0.12), lineWidth: 0.5))
+        .shadow(color: accent.opacity(halo), radius: halo > 0 ? 12 : 0)
+        .animation(.easeOut(duration: 0.4), value: halo)
     }
 }
 
@@ -254,15 +370,7 @@ struct VisualizerBars: View {
                         .frame(width: 2, height: 4 + 12 * level)
                 }
             }
+            .shadow(color: color.opacity(0.6), radius: 3)
         }
-    }
-}
-
-
-private struct PressStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? 0.55 : 0.9)
-            .scaleEffect(configuration.isPressed ? 0.92 : 1)
     }
 }
