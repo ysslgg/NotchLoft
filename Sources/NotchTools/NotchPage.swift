@@ -27,7 +27,7 @@ enum NotchPage: String, CaseIterable, Identifiable {
     /// Taille de l'encoche ouverte sur cette page.
     var size: CGSize {
         switch self {
-        case .music: CGSize(width: 330, height: 160)
+        case .music: CGSize(width: 356, height: 160)
         case .clipboard: CGSize(width: 360, height: 232)
         case .shelf: CGSize(width: 430, height: 160)
         case .audio: CGSize(width: 340, height: 184)

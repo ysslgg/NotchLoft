@@ -235,7 +235,7 @@ private struct ExpandedContent: View {
             if let img = model.artwork, Settings.shared.blurBackdrop {
                 Image(nsImage: img)
                     .resizable().aspectRatio(contentMode: .fill)
-                    .frame(width: 330, height: 160)
+                    .frame(width: NotchPage.music.size.width, height: 160)
                     .blur(radius: 34)
                     .saturation(1.3)
                     .opacity(0.34)

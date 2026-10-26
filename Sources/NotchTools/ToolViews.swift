@@ -13,13 +13,15 @@ struct PageTabs: View {
         if pages.count > 1 {
             let half = (pages.count + 1) / 2
             HStack(spacing: 0) {
-                HStack(spacing: 2) { ForEach(Array(pages.prefix(half))) { tab($0) } }
+                HStack(spacing: 1) { ForEach(Array(pages.prefix(half))) { tab($0) } }
+                    .fixedSize()
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                Spacer().frame(width: ui.geometry.notchWidth + 10)
-                HStack(spacing: 2) { ForEach(Array(pages.dropFirst(half))) { tab($0) } }
+                Spacer().frame(width: ui.geometry.notchWidth + 6)
+                HStack(spacing: 1) { ForEach(Array(pages.dropFirst(half))) { tab($0) } }
+                    .fixedSize()
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, 18)
+            .padding(.horizontal, 22)
             .frame(height: ui.geometry.notchHeight)
         }
     }
@@ -41,7 +43,7 @@ private struct TabButton: View {
             Image(systemName: page.symbol)
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(selected ? accent : .white.opacity(hover.on ? 0.9 : 0.5))
-                .frame(width: 22, height: 22)
+                .frame(width: 21, height: 21)
                 .background(Circle().fill(.white.opacity(selected ? 0.16 : hover.on ? 0.08 : 0)))
                 .contentShape(Circle())
         }
