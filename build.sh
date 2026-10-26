@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Compile l'adaptateur MediaRemote, l'app Swift et assemble NotchTune.app.
+# Compile l'adaptateur MediaRemote, l'app Swift et assemble NotchTools.app.
 # UNIVERSAL=1 ./build.sh  -> binaire arm64 + x86_64
 set -euo pipefail
 cd "$(dirname "$0")"
 
 ROOT="$PWD"
 ADAPTER_DIR="$ROOT/.build-adapter/src"
-APP="$ROOT/dist/NotchTune.app"
+APP="$ROOT/dist/NotchTools.app"
 
 echo "▸ Adaptateur MediaRemote"
 if [ ! -d "$ADAPTER_DIR" ]; then
@@ -24,7 +24,7 @@ BIN_DIR="$(swift build -c release ${ARCHS[@]+"${ARCHS[@]}"} --show-bin-path)"
 echo "▸ Assemblage de l'app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
-cp "$BIN_DIR/NotchTune" "$APP/Contents/MacOS/NotchTune"
+cp "$BIN_DIR/NotchTools" "$APP/Contents/MacOS/NotchTools"
 cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
 cp "$ADAPTER_DIR/bin/mediaremote-adapter.pl" "$APP/Contents/Resources/"
 cp -R "$ADAPTER_DIR/build/MediaRemoteAdapter.framework" "$APP/Contents/Frameworks/"
@@ -36,4 +36,4 @@ echo "▸ Signature ad hoc"
 codesign --force --deep --sign - "$APP"
 
 echo "✓ $APP"
-lipo -info "$APP/Contents/MacOS/NotchTune"
+lipo -info "$APP/Contents/MacOS/NotchTools"

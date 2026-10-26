@@ -1,4 +1,4 @@
-// Génère Resources/AppIcon-1024.png (icône NotchTune). Usage : swift scripts/make-icon.swift <sortie.png>
+// Génère Resources/AppIcon-1024.png (icône NotchTools). Usage : swift scripts/make-icon.swift <sortie.png>
 import AppKit
 import CoreGraphics
 

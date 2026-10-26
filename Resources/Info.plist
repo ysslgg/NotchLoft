@@ -3,18 +3,18 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key><string>fr</string>
-    <key>CFBundleExecutable</key><string>NotchTune</string>
+    <key>CFBundleExecutable</key><string>NotchTools</string>
     <key>CFBundleIconFile</key><string>AppIcon</string>
-    <key>CFBundleIdentifier</key><string>com.notchtune.app</string>
+    <key>CFBundleIdentifier</key><string>com.notchtools.app</string>
     <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-    <key>CFBundleName</key><string>NotchTune</string>
-    <key>CFBundleDisplayName</key><string>NotchTune</string>
+    <key>CFBundleName</key><string>NotchTools</string>
+    <key>CFBundleDisplayName</key><string>NotchTools</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>1.1.0</string>
     <key>CFBundleVersion</key><string>2</string>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>NSHighResolutionCapable</key><true/>
-    <key>NSHumanReadableCopyright</key><string>© NotchTune. Tous droits réservés.</string>
+    <key>NSHumanReadableCopyright</key><string>© NotchTools. Tous droits réservés.</string>
 </dict>
 </plist>

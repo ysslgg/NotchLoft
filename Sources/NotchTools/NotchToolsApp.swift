@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct NotchTuneApp: App {
+struct NotchToolsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     @ObservedObject private var settings = Settings.shared
@@ -13,6 +13,12 @@ struct NotchTuneApp: App {
             Toggle("Bague de progression", isOn: $settings.showProgressRing)
             Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
             Toggle("Retour haptique", isOn: $settings.haptics)
+            Divider()
+            Toggle("Outil : presse-papier", isOn: $settings.enableClipboard)
+            Toggle("Outil : étendoir à captures", isOn: $settings.enableShelf)
+            Toggle("Outil : mixeur audio", isOn: $settings.enableAudio)
+            Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
+            Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
             Divider()
             Picker("Couleur d'accent", selection: $settings.accent) {
                 ForEach(AccentChoice.allCases) { Text($0.label).tag($0) }
@@ -26,7 +32,7 @@ struct NotchTuneApp: App {
             Divider()
             Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
             Divider()
-            Button("Quitter NotchTune") { NSApp.terminate(nil) }
+            Button("Quitter NotchTools") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
         } label: {
             Image(nsImage: MenuBarIcon.make())
@@ -41,8 +47,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        controller = NotchWindowController(model: model)
+        controller = NotchWindowController(model: model, tools: ToolsHub.shared)
         controller?.start()
+        ToolsHub.shared.start()
         model.start()
     }
 

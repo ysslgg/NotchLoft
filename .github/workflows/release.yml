@@ -23,11 +23,11 @@ jobs:
         run: ./scripts/make-dmg.sh
 
       - name: Créer le ZIP
-        run: ditto -c -k --sequesterRsrc --keepParent dist/NotchTune.app dist/NotchTune.zip
+        run: ditto -c -k --sequesterRsrc --keepParent dist/NotchTools.app dist/NotchTools.zip
 
       - name: Publier la release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/NotchTune.dmg
-            dist/NotchTune.zip
+            dist/NotchTools.dmg
+            dist/NotchTools.zip

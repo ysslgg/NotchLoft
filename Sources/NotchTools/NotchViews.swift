@@ -6,6 +6,13 @@ final class NotchUIState: ObservableObject {
     @Published var isScrubbing = false
     @Published var scrubFraction: Double?
     @Published var geometry = NotchGeometry(notchWidth: 185, notchHeight: 32, hasHardwareNotch: false)
+    @Published var page: NotchPage = NotchPage(rawValue: UserDefaults.standard.string(forKey: "lastPage") ?? "") ?? .music {
+        didSet { UserDefaults.standard.set(page.rawValue, forKey: "lastPage") }
+    }
+
+    /// Page réellement affichée (la musique si l'outil a été désactivé).
+    var effectivePage: NotchPage { page.isEnabled ? page : .music }
+    var pageSize: CGSize { effectivePage.size }
 }
 
 private enum Anim {
@@ -21,14 +28,16 @@ private enum Anim {
 struct NotchRootView: View {
     @ObservedObject var model: NowPlayingModel
     @ObservedObject var ui: NotchUIState
+    let tools: ToolsHub
 
     var body: some View {
         let g = ui.geometry
-        let show = model.isShown
-        let size: CGSize = show
-            ? (ui.expanded ? NotchGeometry.expandedSize : g.compactSize)
-            : CGSize(width: g.notchWidth, height: g.notchHeight)
-        let shape = NotchShape(topRadius: ui.expanded ? 14 : 6, bottomRadius: ui.expanded ? 24 : 10)
+        let musicShown = model.isShown
+        let open = ui.expanded
+        let size: CGSize = open
+            ? ui.pageSize
+            : (musicShown ? g.compactSize : CGSize(width: g.notchWidth, height: g.notchHeight))
+        let shape = NotchShape(topRadius: open ? 14 : 6, bottomRadius: open ? 24 : 10)
 
         ZStack(alignment: .top) {
             Color.clear
@@ -38,35 +47,73 @@ struct NotchRootView: View {
                                        .init(color: model.accent.opacity(0), location: 0.22),
                                        .init(color: model.accent.opacity(0.42), location: 1)],
                                startPoint: .top, endPoint: .bottom)
-                    .opacity(ui.expanded ? 1 : 0.35)
+                    .opacity(open ? 1 : 0.35)
 
                 CompactContent(model: model, geometry: g)
                     .frame(width: g.compactSize.width, height: g.compactSize.height)
-                    .opacity(ui.expanded || !show ? 0 : 1)
-                    .animation(ui.expanded ? Anim.compactOut : Anim.compactIn, value: ui.expanded)
-                    .animation(.easeOut(duration: 0.2), value: show)
+                    .opacity(open || !musicShown ? 0 : 1)
+                    .animation(open ? Anim.compactOut : Anim.compactIn, value: open)
+                    .animation(.easeOut(duration: 0.2), value: musicShown)
 
-                ExpandedContent(model: model, ui: ui)
-                    .frame(width: NotchGeometry.expandedSize.width, height: NotchGeometry.expandedSize.height)
-                    .opacity(ui.expanded && show ? 1 : 0)
-                    .animation(ui.expanded ? Anim.expandedIn : Anim.expandedOut, value: ui.expanded)
-                    .allowsHitTesting(ui.expanded)
+                ZStack(alignment: .top) {
+                    switch ui.effectivePage {
+                    case .music:
+                        Group {
+                            if model.hasTrack {
+                                ExpandedContent(model: model, ui: ui)
+                            } else {
+                                MusicPlaceholder(ui: ui)
+                            }
+                        }
+                        .transition(.opacity)
+                    case .clipboard:
+                        ClipboardPage(store: tools.clipboard, ui: ui, accent: model.accent).transition(.opacity)
+                    case .shelf:
+                        ShelfPage(shelf: tools.shelf, ui: ui, accent: model.accent).transition(.opacity)
+                    case .audio:
+                        AudioPage(mixer: tools.audio, ui: ui, accent: model.accent).transition(.opacity)
+                    }
+                }
+                .frame(width: ui.pageSize.width, height: ui.pageSize.height, alignment: .top)
+                .animation(.easeOut(duration: 0.18), value: ui.effectivePage)
+                .opacity(open ? 1 : 0)
+                .animation(open ? Anim.expandedIn : Anim.expandedOut, value: open)
+                .allowsHitTesting(open)
+
+                PageTabs(ui: ui, accent: model.accent)
+                    .frame(width: ui.pageSize.width)
+                    .opacity(open ? 1 : 0)
+                    .animation(open ? Anim.expandedIn : Anim.expandedOut, value: open)
+                    .allowsHitTesting(open)
             }
             .frame(width: size.width, height: size.height, alignment: .top)
             .clipShape(shape)
-            // Sur un Mac sans encoche, la forme simulée disparaît quand rien ne joue.
-            .opacity(show || g.hasHardwareNotch ? 1 : 0)
-            .animation(Anim.shape, value: ui.expanded)
-            .animation(Anim.shape, value: show)
+            // Sur un Mac sans encoche, la forme simulée disparaît quand il n'y a rien à montrer.
+            .opacity(musicShown || open || g.hasHardwareNotch ? 1 : 0)
+            .animation(Anim.shape, value: open)
+            .animation(Anim.shape, value: musicShown)
+            .animation(Anim.shape, value: ui.effectivePage)
             .animation(.easeOut(duration: 0.25), value: g)
         }
         .frame(width: NotchGeometry.panelSize.width, height: NotchGeometry.panelSize.height, alignment: .top)
     }
 }
 
+private struct MusicPlaceholder: View {
+    @ObservedObject var ui: NotchUIState
+    var body: some View {
+        VStack(spacing: 6) {
+            Spacer().frame(height: ui.geometry.notchHeight)
+            Image(systemName: "music.note").font(.system(size: 22)).foregroundStyle(.white.opacity(0.35))
+            Text("Aucune lecture en cours").font(.system(size: 12)).foregroundStyle(.white.opacity(0.5))
+            Spacer()
+        }
+    }
+}
+
 // MARK: - Mode compact
 
-private final class HoverBox: ObservableObject {
+final class HoverBox: ObservableObject {
     @Published var on = false
 }
 
@@ -332,7 +379,7 @@ private struct ControlButton: View {
     }
 }
 
-private struct PressStyle: ButtonStyle {
+struct PressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .opacity(configuration.isPressed ? 0.6 : 1)

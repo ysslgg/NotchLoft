@@ -1,29 +1,41 @@
 <div align="center">
 
-<img src="Resources/AppIcon-1024.png" width="128" alt="Icône de NotchTune">
+<img src="Resources/AppIcon-1024.png" width="128" alt="Icône de NotchTools">
 
-# NotchTune
+# NotchTools
 
-**La musique en cours, dans l'encoche de ton MacBook.**
+**La boîte à outils cachée dans l'encoche de ton MacBook.**
 
-Pochette, titre, progression et contrôles, au bout de ta souris : l'encoche devient un lecteur discret.
+Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : survole l'encoche, tout est là.
 
-[![Télécharger NotchTune](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchTune.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchTune/releases/latest/download/NotchTune.dmg)
+[![Télécharger NotchTools](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchTools.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchTools/releases/latest/download/NotchTools.dmg)
 
-![Dernière version](https://img.shields.io/github/v/release/ysslgg/NotchTune?color=8A2BE2&label=version)
-![Téléchargements](https://img.shields.io/github/downloads/ysslgg/NotchTune/total?color=ec4899&label=t%C3%A9l%C3%A9chargements)
+![Dernière version](https://img.shields.io/github/v/release/ysslgg/NotchTools?color=8A2BE2&label=version)
+![Téléchargements](https://img.shields.io/github/downloads/ysslgg/NotchTools/total?color=ec4899&label=t%C3%A9l%C3%A9chargements)
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-444?logo=apple&logoColor=white)
 ![Apple Silicon et Intel](https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-444)
 
 <br>
 
-<img src="docs/hover.png" width="520" alt="NotchTune au survol : pochette, titre, progression et boutons">
+<img src="docs/hover.png" width="460" alt="La musique en cours, au survol de l'encoche">
 
-<sub>Au survol</sub>
+<sub>Musique</sub>
+
+<img src="docs/shelf.png" width="460" alt="L'étendoir : les 5 dernières captures d'écran accrochées à une corde à linge">
+
+<sub>Étendoir à captures d'écran</sub>
+
+<img src="docs/clipboard.png" width="400" alt="L'historique du presse-papier">
+
+<sub>Presse-papier</sub>
+
+<img src="docs/audio.png" width="380" alt="Le mixeur audio : volumes et périphériques">
+
+<sub>Mixeur audio</sub>
 
 <br>
 
-<img src="docs/compact.png" width="520" alt="NotchTune au repos : pochette à gauche, visualiseur à droite">
+<img src="docs/compact.png" width="460" alt="L'encoche au repos : pochette à gauche, visualiseur à droite">
 
 <sub>Au repos</sub>
 
@@ -31,24 +43,43 @@ Pochette, titre, progression et contrôles, au bout de ta souris : l'encoche dev
 
 ## Fonctionnalités
 
-- **Tout ce qui joue** : lit le « Now Playing » du système, donc Apple Music, Spotify, ton navigateur…
-- **Au repos**, l'encoche s'élargit juste un peu : pochette à gauche (entourée d'une bague de progression), visualiseur animé à droite, symbole pause quand la lecture est en pause. Rien ne s'affiche quand rien ne joue.
-- **Au survol**, elle s'agrandit : pochette, titre et artiste (qui défilent s'ils sont longs), barre de progression à cliquer ou glisser pour avancer dans le morceau, temps écoulé et restant, précédent / lecture-pause / suivant.
-- **Aux couleurs de la pochette** : la couleur d'accent est extraite de l'image (barres, progression, halo, dégradé de fond), ou choisie parmi des teintes fixes.
-- **Un clic sur l'icône de l'app** (Spotify, Musique…) l'ouvre directement.
-- **Personnalisable** depuis l'icône de la barre des menus : visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage.
-- **Discret** : aucune icône dans le Dock, seulement une icône dans la barre des menus pour régler l'app ou la quitter.
+### 🎵 Musique
+- Lit le « Now Playing » du système : Apple Music, Spotify, ton navigateur…
+- **Au repos**, l'encoche s'élargit juste un peu : pochette à gauche (avec une bague de progression), visualiseur animé à droite, symbole pause en pause. Rien ne s'affiche quand rien ne joue.
+- **Au survol** : pochette, titre et artiste (qui défilent s'ils sont longs), barre de progression à cliquer ou glisser, temps écoulé et restant, précédent / lecture-pause / suivant. Un clic sur l'icône de l'app ouvre Spotify, Musique…
+- Couleurs d'accent tirées de la pochette, ou teintes fixes au choix.
+
+### 📋 Presse-papier
+- Historique du texte copié (30 éléments), un clic remet l'élément dans le presse-papier.
+- Épingle les éléments importants : ils restent, même après un redémarrage.
+- Les copies de mots de passe (1Password et autres gestionnaires) ne sont jamais enregistrées.
+
+### 🧷 Étendoir à captures d'écran
+- Tes 5 dernières captures d'écran s'accrochent à une corde à linge, avec leurs pinces.
+- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, clic droit pour copier l'image ou l'afficher dans le Finder.
+
+### 🎚️ Mixeur audio
+- Volume et sourdine de la sortie, volume du micro.
+- Change de sortie (haut-parleurs, AirPods, écran…) ou d'entrée en un clic.
+
+### Et aussi
+- **Onglets** dans les ailes de l'encoche pour passer d'un outil à l'autre.
+- **Personnalisable** depuis l'icône de la barre des menus : activer ou non chaque outil, visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage.
+- **Discret** : aucune icône dans le Dock.
 - **Pour tous les Mac** : sur un Mac sans encoche, une encoche simulée prend le relais.
 
 ## Installation
 
-1. Télécharge **NotchTune.dmg** avec le bouton ci-dessus.
-2. Ouvre le DMG et glisse **NotchTune** dans **Applications**.
-3. Au premier lancement, macOS affiche un avertissement car l'app n'est pas notarisée. Ouvre **Réglages Système → Confidentialité et sécurité**, descends jusqu'à NotchTune et clique sur **Ouvrir quand même**.
+1. Télécharge **NotchTools.dmg** avec le bouton ci-dessus.
+2. Ouvre le DMG et glisse **NotchTools** dans **Applications**.
+3. Au premier lancement, macOS affiche un avertissement car l'app n'est pas notarisée. Ouvre **Réglages Système → Confidentialité et sécurité**, descends jusqu'à NotchTools et clique sur **Ouvrir quand même**.
+4. Pour l'étendoir, autorise l'accès au dossier des captures (Bureau par défaut) quand macOS te le demande.
 
 ## Limites
 
+- Le presse-papier ne garde que le texte, pas les images ni les fichiers.
+- Le mixeur règle le volume global, pas celui de chaque app (macOS ne le permet pas sans pilote audio).
 - Le visualiseur est purement décoratif : il ne capte pas le son.
 - L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.
-- Les informations affichées dépendent de ce que l'application de lecture transmet au système : certains lecteurs n'envoient ni pochette ni durée.
+- Les informations de lecture dépendent de ce que l'app transmet au système : certains lecteurs n'envoient ni pochette ni durée.
 - Usage personnel uniquement, voir la [licence](LICENSE).

@@ -35,8 +35,8 @@ func text(_ s: String, _ size: CGFloat, _ weight: NSFont.Weight, _ alpha: CGFloa
     (s as NSString).draw(at: p, withAttributes: [.font: NSFont.systemFont(ofSize: size, weight: weight),
                                                   .foregroundColor: NSColor.white.withAlphaComponent(alpha)])
 }
-text("NotchTune", 92, .heavy, 1, at: NSPoint(x: 350, y: 150))
-text("La musique en cours, dans l'encoche de ton Mac.", 33, .medium, 0.9, at: NSPoint(x: 356, y: 100))
+text("NotchTools", 92, .heavy, 1, at: NSPoint(x: 350, y: 150))
+text("Musique, presse-papier, captures, audio : tout dans l'encoche.", 33, .medium, 0.9, at: NSPoint(x: 356, y: 100))
 text("macOS 14+  ·  Apple Silicon et Intel  ·  Gratuit", 23, .regular, 0.7, at: NSPoint(x: 358, y: 58))
 NSGraphicsContext.restoreGraphicsState()
 try! rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: a[3]))

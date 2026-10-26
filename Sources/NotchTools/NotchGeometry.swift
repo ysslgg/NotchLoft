@@ -8,9 +8,8 @@ struct NotchGeometry: Equatable {
     /// Largeur de chaque côté de l'encoche en mode compact.
     var side: CGFloat = Settings.shared.compactSide
 
-    static let expandedSize = CGSize(width: 330, height: 160)
-    /// Fenêtre fixe, un peu plus grande que le mode survol.
-    static let panelSize = CGSize(width: 380, height: 180)
+    /// Fenêtre fixe, un peu plus grande que la plus grande page.
+    static let panelSize = CGSize(width: 460, height: 252)
 
     var compactSize: CGSize { CGSize(width: notchWidth + 2 * side, height: notchHeight) }
 

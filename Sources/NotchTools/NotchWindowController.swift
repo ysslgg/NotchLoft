@@ -22,7 +22,7 @@ final class NotchWindowController {
     private var pendingTarget: Bool?
     private var settingsObserver: AnyCancellable?
 
-    init(model: NowPlayingModel) {
+    init(model: NowPlayingModel, tools: ToolsHub) {
         self.model = model
         panel = NotchPanel(
             contentRect: NSRect(origin: .zero, size: NotchGeometry.panelSize),
@@ -40,7 +40,7 @@ final class NotchWindowController {
         panel.ignoresMouseEvents = true
         panel.acceptsMouseMovedEvents = true
 
-        let host = NSHostingView(rootView: NotchRootView(model: model, ui: ui))
+        let host = NSHostingView(rootView: NotchRootView(model: model, ui: ui, tools: tools))
         host.sizingOptions = []
         host.frame = NSRect(origin: .zero, size: NotchGeometry.panelSize)
         panel.contentView = host
@@ -58,7 +58,7 @@ final class NotchWindowController {
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.reposition() }
         }
-        let mask: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged]
+        let mask: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .leftMouseUp]
         if let m = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] _ in
             MainActor.assumeIsolated { self?.mouseChanged() }
         }) { monitors.append(m) }
@@ -81,10 +81,17 @@ final class NotchWindowController {
 
     // MARK: Survol
 
+    /// L'encoche s'ouvre s'il y a de la musique, ou à défaut des outils (si le réglage l'autorise).
+    private var canExpand: Bool {
+        model.isShown || (Settings.shared.hasTools && Settings.shared.openWhenIdle)
+    }
+
     private func hitRect(expanded: Bool) -> NSRect? {
         guard let screen else { return nil }
         let g = ui.geometry
-        var size = expanded ? NotchGeometry.expandedSize : g.compactSize
+        var size = expanded
+            ? ui.pageSize
+            : (model.isShown ? g.compactSize : CGSize(width: g.notchWidth, height: g.notchHeight))
         // Marges : tolérance au bord haut de l'écran, et hystérésis une fois ouvert.
         let pad: CGFloat = expanded ? 10 : 0
         size.width += 2 * pad
@@ -94,13 +101,16 @@ final class NotchWindowController {
     }
 
     private func mouseChanged() {
-        guard model.isShown else {
+        guard canExpand else {
             if ui.expanded { schedule(open: false, delay: 0.24) } else { cancelPending() }
             return
         }
         guard let rect = hitRect(expanded: ui.expanded) else { return }
         var inside = rect.contains(NSEvent.mouseLocation)
-        if !inside && ui.isScrubbing { inside = true }
+        // Pendant un glisser (curseur, vignette), on reste ouvert.
+        if !inside && ui.expanded && (ui.isScrubbing || NSEvent.pressedMouseButtons != 0) { inside = true }
+        // La fenêtre ne capte la souris que sur l'encoche ouverte, jamais autour.
+        panel.ignoresMouseEvents = !(ui.expanded && inside)
         if inside == ui.expanded {
             cancelPending()
         } else {
@@ -129,6 +139,10 @@ final class NotchWindowController {
         pending = nil
         pendingTarget = nil
         guard ui.expanded != value else { return }
+        if value, !model.isShown, ui.effectivePage == .music,
+           let tool = NotchPage.enabled.first(where: { $0 != .music }) {
+            ui.page = tool
+        }
         ui.expanded = value
         panel.ignoresMouseEvents = !value
         model.tracksPosition = value

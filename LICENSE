@@ -1,16 +1,16 @@
-NotchTune — Licence propriétaire
+NotchTools — Licence propriétaire
 Copyright (c) 2026 Youssef Aboubi. Tous droits réservés.
 
-Usage personnel gratuit : vous pouvez télécharger et utiliser NotchTune
+Usage personnel gratuit : vous pouvez télécharger et utiliser NotchTools
 gratuitement, pour votre usage personnel et non commercial.
 
 Il est interdit, sans autorisation écrite préalable de l'auteur :
-  - de redistribuer NotchTune, en tout ou partie, sous quelque forme que ce soit ;
-  - de modifier, décompiler ou créer des œuvres dérivées de NotchTune ;
-  - de vendre, louer ou sous-licencier NotchTune.
+  - de redistribuer NotchTools, en tout ou partie, sous quelque forme que ce soit ;
+  - de modifier, décompiler ou créer des œuvres dérivées de NotchTools ;
+  - de vendre, louer ou sous-licencier NotchTools.
 
 Le logiciel est fourni « en l'état », sans garantie d'aucune sorte. L'auteur
 ne saurait être tenu responsable des dommages liés à son utilisation.
 
-NotchTune embarque mediaremote-adapter (BSD 3-Clause,
+NotchTools embarque mediaremote-adapter (BSD 3-Clause,
 https://github.com/ungive/mediaremote-adapter), qui reste soumis à sa propre licence.
