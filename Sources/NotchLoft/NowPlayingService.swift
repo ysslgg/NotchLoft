@@ -50,7 +50,27 @@ final class NowPlayingService: @unchecked Sendable {
     // MARK: Cycle de vie
 
     func start() {
-        io.async { self.launch() }
+        io.async {
+            Self.killStrayAdapters()
+            self.launch()
+        }
+    }
+
+    /// Un adaptateur resté en vie après un arrêt brutal de l'app (parent = launchd) est supprimé.
+    private static func killStrayAdapters() {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: "/bin/ps")
+        p.arguments = ["-axo", "pid=,ppid=,command="]
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        p.standardError = FileHandle.nullDevice
+        guard (try? p.run()) != nil else { return }
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        p.waitUntilExit()
+        for line in String(decoding: data, as: UTF8.self).split(separator: "\n") where line.contains("mediaremote-adapter.pl") {
+            let f = line.split(separator: " ", maxSplits: 2, omittingEmptySubsequences: true)
+            if f.count == 3, f[1] == "1", let pid = pid_t(f[0]) { kill(pid, SIGTERM) }
+        }
     }
 
     func stop() {

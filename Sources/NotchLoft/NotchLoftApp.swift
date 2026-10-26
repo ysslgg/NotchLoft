@@ -19,6 +19,7 @@ struct NotchLoftApp: App {
             Toggle("Outil : étendoir à captures", isOn: $settings.enableShelf)
             Toggle("Outil : dépôt de fichiers", isOn: $settings.enableFiles)
             Toggle("Outil : batterie et système", isOn: $settings.enableSystem)
+            Button("Réessayer l'accès au dossier des captures") { ToolsHub.shared.shelf.retryAccess() }
             Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
             Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
             Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
@@ -61,7 +62,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let model = NowPlayingModel()
     private var controller: NotchWindowController?
 
+    /// Une seule instance à la fois : la plus récente remplace les autres (mise à jour, nouvelle copie).
+    /// Deux copies qui se disputent les autorisations macOS (Bureau…) réclamaient la permission en boucle.
+    private func replaceOtherInstances() {
+        guard let id = Bundle.main.bundleIdentifier else { return }
+        let others = NSRunningApplication.runningApplications(withBundleIdentifier: id)
+            .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
+        guard !others.isEmpty else { return }
+        others.forEach { $0.terminate() }
+        let deadline = Date().addingTimeInterval(2)
+        while Date() < deadline, others.contains(where: { !$0.isTerminated }) {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
+        others.filter { !$0.isTerminated }.forEach { $0.forceTerminate() }
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        replaceOtherInstances()
         NSApp.setActivationPolicy(.accessory)
         controller = NotchWindowController(model: model, tools: ToolsHub.shared)
         controller?.start()

@@ -35,6 +35,8 @@ final class ScreenshotShelf: ObservableObject {
     private var held = Set<URL>()
     private var latest: [Shot] = []
     private var firstScanDone = false
+    /// Après un refus d'accès, on n'insiste pas (ça relancerait la demande d'autorisation).
+    private var deniedUntil = Date.distantPast
     private var thumbs: [URL: Thumb] = [:]
     private var lastPasteCount = NSPasteboard.general.changeCount
     private var ignoredPasteCount = -1
@@ -93,7 +95,7 @@ final class ScreenshotShelf: ObservableObject {
 
     /// Réagit tout de suite aux changements du dossier plutôt que d'attendre le prochain tour.
     private func watch(_ dir: URL) {
-        guard dir.path != watchedPath else { return }
+        guard dir.path != watchedPath, Date() >= deniedUntil else { return }
         watcher?.cancel(); watcher = nil
         watchedPath = dir.path
         let fd = open(dir.path, O_EVTONLY)
@@ -156,7 +158,16 @@ final class ScreenshotShelf: ObservableObject {
         if shots.map(\.url) != visible.map(\.url) { shots = visible }
     }
 
+    /// Relance l'accès au dossier après un refus (depuis le menu).
+    func retryAccess() {
+        deniedUntil = .distantPast
+        accessDenied = false
+        watch(Self.directory())
+        scan()
+    }
+
     func scan() {
+        guard Date() >= deniedUntil else { return }
         let dir = Self.directory()
         let hidden = dismissed
         queue.async { [weak self] in
@@ -195,6 +206,7 @@ final class ScreenshotShelf: ObservableObject {
 
     private func ingest(_ result: [Shot], denied: Bool) {
         accessDenied = denied && result.isEmpty
+        if denied { deniedUntil = Date().addingTimeInterval(600) }
         // « Nouveau » = jamais vu et très récent (un fichier plus ancien qui remonte dans le top n'en est pas un).
         let fresh = firstScanDone
             ? result.filter { !known.contains($0.url) && -$0.date.timeIntervalSinceNow < 30 }
