@@ -8,6 +8,7 @@ final class ToolsHub {
     let clipboard = ClipboardStore()
     let shelf = ScreenshotShelf()
     let audio = AudioMixer()
+    let apps = AppMixer()
 
     private var observer: AnyCancellable?
     private var current: (Bool, Bool) = (false, false)

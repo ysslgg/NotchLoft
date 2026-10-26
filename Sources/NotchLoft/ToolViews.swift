@@ -434,10 +434,16 @@ private struct Peg: View {
 
 // MARK: - Audio
 
+final class AudioTabState: ObservableObject {
+    @Published var showApps = false
+}
+
 struct AudioPage: View {
     @ObservedObject var mixer: AudioMixer
+    @ObservedObject var apps: AppMixer
     @ObservedObject var ui: NotchUIState
     let accent: Color
+    @StateObject private var tab = AudioTabState()
 
     private var outSymbol: String {
         if mixer.outMuted || mixer.outVolume <= 0.001 { return "speaker.slash.fill" }
@@ -448,44 +454,75 @@ struct AudioPage: View {
         VStack(spacing: 8) {
             Spacer().frame(height: ui.geometry.notchHeight + 2)
 
-            HStack(spacing: 10) {
-                Button { mixer.toggleMute() } label: {
-                    Image(systemName: outSymbol)
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(mixer.outMuted ? .white.opacity(0.4) : .white)
-                        .frame(width: 24, height: 24)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(PressStyle())
-                // En sourdine, le niveau reste affiché (grisé) au lieu de tomber à 0 %.
-                ValueSlider(value: Double(mixer.outVolume), enabled: mixer.outVolumeAvailable,
-                            accent: mixer.outMuted ? .white.opacity(0.4) : accent) { v, dragging in mixer.setOutputVolume(Float(v), dragging: dragging) }
-                    .frame(height: 24)
-                percent(mixer.outVolumeAvailable ? Int(mixer.outVolume * 100) : nil, dimmed: mixer.outMuted)
+            HStack(spacing: 6) {
+                pill("Général", selected: !tab.showApps) { tab.showApps = false }
+                pill("Applications", selected: tab.showApps) { tab.showApps = true }
+                Spacer()
             }
+            .frame(height: 22)
 
-            HStack(spacing: 10) {
-                Image(systemName: "mic.fill")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white.opacity(mixer.inVolumeAvailable ? 0.9 : 0.4))
-                    .frame(width: 24, height: 24)
-                ValueSlider(value: Double(mixer.inVolume), enabled: mixer.inVolumeAvailable,
-                            accent: accent) { v, dragging in mixer.setInputVolume(Float(v), dragging: dragging) }
-                    .frame(height: 24)
-                percent(mixer.inVolumeAvailable ? Int(mixer.inVolume * 100) : nil)
+            if tab.showApps {
+                AppsList(apps: apps, accent: accent)
+            } else {
+                general
             }
-
-            DeviceChips(devices: mixer.outputs, current: mixer.currentOutput, accent: accent,
-                        select: mixer.selectOutput)
-            DeviceChips(devices: mixer.inputs, current: mixer.currentInput, accent: accent,
-                        select: mixer.selectInput)
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 28)
         .padding(.bottom, 12)
-        .onAppear { if ui.expanded { mixer.start() } }
-        .onChange(of: ui.expanded) { _, open in open ? mixer.start() : mixer.stop() }
-        .onDisappear { mixer.stop() }
+        .onAppear { if ui.expanded { start() } }
+        .onChange(of: ui.expanded) { _, open in open ? start() : stopAll() }
+        .onDisappear { stopAll() }
+    }
+
+    private func start() { mixer.start(); apps.start() }
+    private func stopAll() { mixer.stop(); apps.stop() }
+
+    private func pill(_ title: String, selected: Bool, _ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(selected ? Color.black : .white.opacity(0.7))
+                .padding(.horizontal, 10)
+                .frame(height: 22)
+                .background(Capsule().fill(selected ? accent : Color.white.opacity(0.12)))
+        }
+        .buttonStyle(PressStyle())
+        .animation(.easeOut(duration: 0.15), value: selected)
+    }
+
+    @ViewBuilder private var general: some View {
+        HStack(spacing: 10) {
+            Button { mixer.toggleMute() } label: {
+                Image(systemName: outSymbol)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(mixer.outMuted ? .white.opacity(0.4) : .white)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressStyle())
+            // En sourdine, le niveau reste affiché (grisé) au lieu de tomber à 0 %.
+            ValueSlider(value: Double(mixer.outVolume), enabled: mixer.outVolumeAvailable,
+                        accent: mixer.outMuted ? .white.opacity(0.4) : accent) { v, dragging in
+                mixer.setOutputVolume(Float(v), dragging: dragging)
+            }
+            .frame(height: 24)
+            percent(mixer.outVolumeAvailable ? Int(mixer.outVolume * 100) : nil, dimmed: mixer.outMuted)
+        }
+
+        HStack(spacing: 10) {
+            Image(systemName: "mic.fill")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.white.opacity(mixer.inVolumeAvailable ? 0.9 : 0.4))
+                .frame(width: 24, height: 24)
+            ValueSlider(value: Double(mixer.inVolume), enabled: mixer.inVolumeAvailable,
+                        accent: accent) { v, dragging in mixer.setInputVolume(Float(v), dragging: dragging) }
+                .frame(height: 24)
+            percent(mixer.inVolumeAvailable ? Int(mixer.inVolume * 100) : nil)
+        }
+
+        DeviceChips(devices: mixer.outputs, current: mixer.currentOutput, accent: accent, select: mixer.selectOutput)
+        DeviceChips(devices: mixer.inputs, current: mixer.currentInput, accent: accent, select: mixer.selectInput)
     }
 
     private func percent(_ v: Int?, dimmed: Bool = false) -> some View {
@@ -493,6 +530,83 @@ struct AudioPage: View {
             .font(.system(size: 11, weight: .medium).monospacedDigit())
             .foregroundStyle(.white.opacity(dimmed ? 0.3 : 0.6))
             .frame(width: 34, alignment: .trailing)
+    }
+}
+
+/// Volume par application (mélangeur façon Windows).
+private struct AppsList: View {
+    @ObservedObject var apps: AppMixer
+    let accent: Color
+
+    var body: some View {
+        if !apps.isSupported {
+            note("speaker.slash", "Le volume par application demande macOS 14.2 ou plus.")
+        } else if apps.apps.isEmpty {
+            note("waveform", "Aucune app ne joue de son pour le moment.")
+        } else {
+            VStack(spacing: 4) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack(spacing: 2) {
+                        ForEach(apps.apps) { AppRow(app: $0, apps: apps, accent: accent) }
+                    }
+                }
+                if let e = apps.errorMessage {
+                    Text(e)
+                        .font(.system(size: 9.5))
+                        .foregroundStyle(Color(red: 1, green: 0.55, blue: 0.5))
+                        .lineLimit(2)
+                }
+            }
+        }
+    }
+
+    private func note(_ symbol: String, _ text: String) -> some View {
+        VStack(spacing: 6) {
+            Spacer(minLength: 6)
+            Image(systemName: symbol).font(.system(size: 18)).foregroundStyle(.white.opacity(0.35))
+            Text(text).font(.system(size: 12)).foregroundStyle(.white.opacity(0.5)).multilineTextAlignment(.center)
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct AppRow: View {
+    let app: MixerApp
+    @ObservedObject var apps: AppMixer
+    let accent: Color
+
+    var body: some View {
+        let muted = apps.isMuted(app.id)
+        let vol = apps.volume(for: app.id)
+        HStack(spacing: 8) {
+            Image(nsImage: app.icon)
+                .resizable()
+                .frame(width: 20, height: 20)
+                .opacity(app.isPlaying || vol < 1 ? 1 : 0.5)
+            Text(app.name)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.white.opacity(0.9))
+                .lineLimit(1)
+                .frame(width: 74, alignment: .leading)
+            Button { apps.toggleMute(app) } label: {
+                Image(systemName: muted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(muted ? .white.opacity(0.4) : .white.opacity(0.8))
+                    .frame(width: 18, height: 22)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(PressStyle())
+            ValueSlider(value: Double(vol), enabled: true, accent: muted ? .white.opacity(0.4) : accent) { v, _ in
+                apps.setVolume(Float(v), for: app)
+            }
+            .frame(height: 22)
+            Text("\(Int(vol * 100))%")
+                .font(.system(size: 10, weight: .medium).monospacedDigit())
+                .foregroundStyle(.white.opacity(muted ? 0.3 : 0.55))
+                .frame(width: 30, alignment: .trailing)
+        }
+        .frame(height: 28)
     }
 }
 

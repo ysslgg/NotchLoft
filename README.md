@@ -62,6 +62,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 ### 🎚️ Mixeur audio
 - Volume et sourdine de la sortie, volume du micro.
+- **Volume par application** (comme le mélangeur de Windows) : un curseur et une sourdine pour chaque app qui joue du son. Il s'active seulement quand tu touches à un curseur, et les apps que tu ne règles pas ne sont pas modifiées.
 - Change de sortie (haut-parleurs, AirPods, écran…) ou d'entrée en un clic.
 
 ### Et aussi
@@ -81,7 +82,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 - Le presse-papier ne garde que le texte, pas les images ni les fichiers.
 - L'étendoir ne voit pas les captures envoyées directement vers une app (Mail, Messages…) : elles n'existent ni en fichier ni dans le presse-papiers.
-- Le mixeur règle le volume global, pas celui de chaque app (macOS ne le permet pas sans pilote audio).
+- Le volume par application demande macOS 14.2 et l'autorisation « Enregistrement audio de l'app » (réglable dans Confidentialité). Il ne peut pas régler les contenus protégés par DRM, et les apps qui passent par le moteur de Safari (WebKit) n'apparaissent pas toujours.
 - Le visualiseur est purement décoratif : il ne capte pas le son.
 - L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.
 - Les informations de lecture dépendent de ce que l'app transmet au système : certains lecteurs n'envoient ni pochette ni durée.
