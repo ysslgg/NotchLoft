@@ -137,7 +137,7 @@ final class NotchWindowController {
     }
 
     private func peekShelf() {
-        ui.page = .shelf
+        ui.showTemporarily(.shelf)
         peekUntil = Date().addingTimeInterval(3.2)
         cancelPending()
         setExpanded(true)
@@ -164,7 +164,7 @@ final class NotchWindowController {
         // La fenêtre ne capte la souris que sur l'encoche ouverte, jamais autour.
         panel.ignoresMouseEvents = !(ui.expanded && inside)
         // Un fichier qu'on traîne jusqu'à l'encoche ouvre le dépôt.
-        if fileDrag, inside, ui.expanded, ui.effectivePage != .files, ui.effectivePage != .shelf { ui.page = .files }
+        if fileDrag, inside, ui.expanded, ui.effectivePage != .files, ui.effectivePage != .shelf { ui.showTemporarily(.files) }
         if inside == ui.expanded {
             cancelPending()
         } else {
@@ -194,12 +194,20 @@ final class NotchWindowController {
         pendingTarget = nil
         guard ui.expanded != value else { return }
         if value, isFileDrag {
-            ui.page = .files
-        } else if value, !model.isShown, ui.effectivePage == .music,
-           let tool = NotchPage.enabled.first(where: { $0 != .music }) {
-            ui.page = tool
+            ui.showTemporarily(.files)
+        } else if value, !model.isShown, ui.effectivePage == .music {
+            // Rien ne joue : on rouvre le dernier outil utilisé (à défaut, le premier disponible).
+            let tools = NotchPage.enabled.filter { $0 != .music }
+            if let tool = tools.first(where: { $0 == ui.lastTool }) ?? tools.first { ui.page = tool }
         }
         ui.expanded = value
+        if !value, let back = ui.restoreAfterClose {
+            ui.restoreAfterClose = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self, !self.ui.expanded else { return }
+                self.ui.page = back
+            }
+        }
         MouseHub.shared.location = CGPoint(x: -10_000, y: -10_000)
         panel.ignoresMouseEvents = !value
         model.tracksPosition = value

@@ -25,7 +25,7 @@ struct PageTabs: View {
     }
 
     private func tab(_ page: NotchPage) -> some View {
-        TabButton(page: page, selected: ui.effectivePage == page, accent: accent) { ui.page = page }
+        TabButton(page: page, selected: ui.effectivePage == page, accent: accent) { ui.select(page) }
     }
 }
 

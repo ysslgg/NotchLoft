@@ -10,6 +10,27 @@ final class NotchUIState: ObservableObject {
         didSet { UserDefaults.standard.set(page.rawValue, forKey: "lastPage") }
     }
 
+    /// Dernier outil (hors musique) choisi par l'utilisateur : celui qui s'ouvre quand rien ne joue.
+    var lastTool: NotchPage? = NotchPage(rawValue: UserDefaults.standard.string(forKey: "lastTool") ?? "")
+    /// Page à remettre à la fermeture quand l'encoche s'est ouverte toute seule (nouvelle capture, fichier glissé).
+    var restoreAfterClose: NotchPage?
+
+    /// Choix de l'utilisateur (onglet) : devient la page mémorisée.
+    func select(_ p: NotchPage) {
+        restoreAfterClose = nil
+        page = p
+        if p != .music {
+            lastTool = p
+            UserDefaults.standard.set(p.rawValue, forKey: "lastTool")
+        }
+    }
+
+    /// Ouverture automatique : n'écrase pas la page que l'utilisateur avait choisie.
+    func showTemporarily(_ p: NotchPage) {
+        if restoreAfterClose == nil { restoreAfterClose = page }
+        page = p
+    }
+
     /// Page réellement affichée (la musique si l'outil a été désactivé).
     var effectivePage: NotchPage { page.isEnabled ? page : .music }
     /// Taille de la page affichée : jamais plus étroite que l'encoche physique + la place des onglets
