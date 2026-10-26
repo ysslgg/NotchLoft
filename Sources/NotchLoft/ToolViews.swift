@@ -11,16 +11,15 @@ struct PageTabs: View {
         let pages = NotchPage.enabled
         if pages.count > 1 {
             let half = (pages.count + 1) / 2
+            // Boutons alignés sur les marges du contenu : à gauche pour les premiers, à droite pour les derniers.
             HStack(spacing: 0) {
-                HStack(spacing: 1) { ForEach(Array(pages.prefix(half))) { tab($0) } }
+                HStack(spacing: 2) { ForEach(Array(pages.prefix(half))) { tab($0) } }
                     .fixedSize()
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                Spacer().frame(width: ui.geometry.notchWidth + 6)
-                HStack(spacing: 1) { ForEach(Array(pages.dropFirst(half))) { tab($0) } }
+                Spacer(minLength: ui.geometry.notchWidth)
+                HStack(spacing: 2) { ForEach(Array(pages.dropFirst(half))) { tab($0) } }
                     .fixedSize()
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.horizontal, 22)
+            .padding(.horizontal, 28)
             .frame(height: ui.geometry.notchHeight)
         }
     }
