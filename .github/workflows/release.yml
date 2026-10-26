@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer les outils
+        run: brew install cmake create-dmg
+
+      - name: Compiler (universel arm64 + x86_64)
+        run: UNIVERSAL=1 ./build.sh
+
+      - name: Créer le DMG
+        run: ./scripts/make-dmg.sh
+
+      - name: Créer le ZIP
+        run: ditto -c -k --sequesterRsrc --keepParent dist/NotchTune.app dist/NotchTune.zip
+
+      - name: Publier la release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/NotchTune.dmg
+            dist/NotchTune.zip
