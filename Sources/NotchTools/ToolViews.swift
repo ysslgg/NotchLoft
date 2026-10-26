@@ -360,10 +360,11 @@ struct AudioPage: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(PressStyle())
-                ValueSlider(value: Double(mixer.outMuted ? 0 : mixer.outVolume), enabled: mixer.outVolumeAvailable,
-                            accent: accent) { v, dragging in mixer.setOutputVolume(Float(v), dragging: dragging) }
+                // En sourdine, le niveau reste affiché (grisé) au lieu de tomber à 0 %.
+                ValueSlider(value: Double(mixer.outVolume), enabled: mixer.outVolumeAvailable,
+                            accent: mixer.outMuted ? .white.opacity(0.4) : accent) { v, dragging in mixer.setOutputVolume(Float(v), dragging: dragging) }
                     .frame(height: 24)
-                percent(mixer.outVolumeAvailable ? Int((mixer.outMuted ? 0 : mixer.outVolume) * 100) : nil)
+                percent(mixer.outVolumeAvailable ? Int(mixer.outVolume * 100) : nil, dimmed: mixer.outMuted)
             }
 
             HStack(spacing: 10) {
@@ -390,10 +391,10 @@ struct AudioPage: View {
         .onDisappear { mixer.stop() }
     }
 
-    private func percent(_ v: Int?) -> some View {
+    private func percent(_ v: Int?, dimmed: Bool = false) -> some View {
         Text(v.map { "\($0)%" } ?? "—")
             .font(.system(size: 11, weight: .medium).monospacedDigit())
-            .foregroundStyle(.white.opacity(0.6))
+            .foregroundStyle(.white.opacity(dimmed ? 0.3 : 0.6))
             .frame(width: 34, alignment: .trailing)
     }
 }
@@ -424,5 +425,8 @@ private struct DeviceChips: View {
             }
         }
         .frame(height: 26)
+        // Fondu sur le bord droit : la liste défile horizontalement.
+        .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.88),
+                                     .init(color: .clear, location: 1)], startPoint: .leading, endPoint: .trailing))
     }
 }
