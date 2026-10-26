@@ -34,7 +34,9 @@ struct NotchRootView: View {
             Color.clear
             ZStack(alignment: .top) {
                 Color.black
-                LinearGradient(colors: [model.accent.opacity(0), model.accent.opacity(0.30)],
+                LinearGradient(stops: [.init(color: model.accent.opacity(0), location: 0),
+                                       .init(color: model.accent.opacity(0), location: 0.22),
+                                       .init(color: model.accent.opacity(0.42), location: 1)],
                                startPoint: .top, endPoint: .bottom)
                     .opacity(ui.expanded ? 1 : 0.35)
 
@@ -172,8 +174,13 @@ private struct ExpandedContent: View {
                     .frame(width: 330, height: 160)
                     .blur(radius: 34)
                     .saturation(1.3)
-                    .opacity(0.26)
+                    .opacity(0.34)
                     .clipped()
+                    // Noir pur à hauteur de l'encoche, puis fondu progressif vers la couleur
+                    .mask(LinearGradient(stops: [.init(color: .clear, location: 0),
+                                                 .init(color: .clear, location: (ui.geometry.notchHeight + 2) / 160),
+                                                 .init(color: .black, location: 0.85)],
+                                         startPoint: .top, endPoint: .bottom))
                     .id(model.title)
                     .transition(.opacity)
             }
