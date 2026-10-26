@@ -204,72 +204,130 @@ private struct ClipRow: View {
 
 // MARK: - Étendoir à captures d'écran
 
+final class ShelfScroll: ObservableObject {
+    @Published var first: URL?
+}
+
 struct ShelfPage: View {
     @ObservedObject var shelf: ScreenshotShelf
     @ObservedObject var ui: NotchUIState
     let accent: Color
+    @StateObject private var scroll = ShelfScroll()
 
     private let size = NotchPage.shelf.size
     private let thumb = CGSize(width: 90, height: 64)
+    private let visibleSlots = 5
+    private let sidePad: CGFloat = 22
 
-    /// Altitude de la corde à l'abscisse x (courbe de Bézier quadratique symétrique).
+    private var slotW: CGFloat { (size.width - 2 * sidePad) / CGFloat(visibleSlots) }
+    /// Portée d'un brin de corde (une « portée » = l'écran visible).
+    private var span: CGFloat { size.width - 16 }
+
     private func ropeY(_ x: CGFloat, top: CGFloat) -> CGFloat {
-        let x0: CGFloat = 8, x1 = size.width - 8
-        let t = (x - x0) / (x1 - x0)
-        let yc = top + 16
-        return (1 - t) * (1 - t) * top + 2 * (1 - t) * t * yc + t * t * top
+        let u = ((x - 8).truncatingRemainder(dividingBy: span)) / span
+        return top + 32 * (1 - u) * u
     }
 
     var body: some View {
-        let top = ui.geometry.notchHeight + 14
-        let slotW = (size.width - 44) / CGFloat(ScreenshotShelf.capacity)
+        // Le défilement commence sous la zone des onglets, sinon il capte leurs clics.
+        let notchH = ui.geometry.notchHeight
+        let top: CGFloat = 14
+        let scrollH = size.height - notchH
+        let n = shelf.shots.count
+        let slots = max(n, visibleSlots)
+        let segs = max(1, Int(ceil((slotW * CGFloat(slots) + 2 * sidePad - 16) / span)))
+        let contentW = 16 + CGFloat(segs) * span
+        let firstIndex = shelf.shots.firstIndex { $0.url == scroll.first } ?? 0
+
         ZStack(alignment: .topLeading) {
-            Path { p in
-                p.move(to: CGPoint(x: 8, y: top))
-                p.addQuadCurve(to: CGPoint(x: size.width - 8, y: top), control: CGPoint(x: size.width / 2, y: top + 16))
-            }
-            .stroke(Color(red: 0.86, green: 0.74, blue: 0.55), style: StrokeStyle(lineWidth: 1.6, lineCap: .round))
-            .shadow(color: .black.opacity(0.5), radius: 1.5, y: 1)
-
-            ForEach(0..<ScreenshotShelf.capacity, id: \.self) { i in
-                if i >= shelf.shots.count {
-                    let cx = 22 + slotW * (CGFloat(i) + 0.5)
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
-                        .strokeBorder(.white.opacity(0.1), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                        .frame(width: thumb.width, height: thumb.height)
-                        .offset(x: cx - thumb.width / 2, y: ropeY(cx, top: top) + 10)
-                }
-            }
-
-            TimelineView(.animation(minimumInterval: 1.0 / 24, paused: !ui.expanded)) { ctx in
-                let t = ctx.date.timeIntervalSinceReferenceDate
-                ZStack(alignment: .topLeading) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 0) {
+                    Color.clear.frame(width: sidePad, height: 1)
                     ForEach(Array(shelf.shots.enumerated()), id: \.element.id) { i, shot in
-                        let cx = 22 + slotW * (CGFloat(i) + 0.5)
-                        let tilt = [-2.2, 1.6, -1.0, 2.4, -1.8][i % 5]
-                        let sway = sin(t * 1.1 + Double(i) * 1.7) * 1.4
-                        HangingShot(shot: shot, shelf: shelf, thumb: thumb)
-                            .rotationEffect(.degrees(tilt + sway), anchor: .top)
-                            .offset(x: cx - thumb.width / 2, y: ropeY(cx, top: top) - 4)
-                            .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
-                                                    removal: .opacity))
+                        let cx = sidePad + slotW * (CGFloat(i) + 0.5)
+                        TimelineView(.animation(minimumInterval: 1.0 / 24, paused: !ui.expanded)) { ctx in
+                            let t = ctx.date.timeIntervalSinceReferenceDate
+                            let tilt = [-2.2, 1.6, -1.0, 2.4, -1.8][i % 5]
+                            let sway = sin(t * 1.1 + Double(i) * 1.7) * 1.4
+                            HangingShot(shot: shot, shelf: shelf, thumb: thumb)
+                                .rotationEffect(.degrees(tilt + sway), anchor: .top)
+                        }
+                        .frame(width: slotW, height: scrollH - ropeY(cx, top: top), alignment: .top)
+                        .padding(.top, ropeY(cx, top: top) - 4)
+                        .id(shot.url)
+                        .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
+                                                removal: .opacity))
                     }
+                    if n < visibleSlots {
+                        ForEach(n..<visibleSlots, id: \.self) { i in
+                            let cx = sidePad + slotW * (CGFloat(i) + 0.5)
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .strokeBorder(.white.opacity(0.1), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                                .frame(width: thumb.width, height: thumb.height)
+                                .frame(width: slotW)
+                                .padding(.top, ropeY(cx, top: top) + 10)
+                        }
+                    }
+                    Color.clear.frame(width: sidePad, height: 1)
                 }
+                .scrollTargetLayout()
                 .animation(.spring(response: 0.45, dampingFraction: 0.7), value: shelf.shots.map(\.url))
+                .frame(width: contentW, alignment: .leading)
+                .background(alignment: .topLeading) {
+                    Path { p in
+                        for k in 0..<segs {
+                            let x0 = 8 + CGFloat(k) * span
+                            p.move(to: CGPoint(x: x0, y: top))
+                            p.addQuadCurve(to: CGPoint(x: x0 + span, y: top), control: CGPoint(x: x0 + span / 2, y: top + 16))
+                        }
+                    }
+                    .stroke(Color(red: 0.86, green: 0.74, blue: 0.55), style: StrokeStyle(lineWidth: 1.6, lineCap: .round))
+                    .shadow(color: .black.opacity(0.5), radius: 1.5, y: 1)
+                }
+            }
+            .scrollPosition(id: $scroll.first, anchor: .leading)
+            .frame(width: size.width, height: scrollH, alignment: .topLeading)
+            .offset(y: notchH)
+
+            if firstIndex > 0 {
+                chevron("chevron.left") { go(to: firstIndex - 4) }
+                    .offset(x: 16, y: notchH + top + 22)
+            }
+            if firstIndex + visibleSlots < n {
+                chevron("chevron.right") { go(to: firstIndex + 4) }
+                    .offset(x: size.width - 40, y: notchH + top + 22)
             }
 
             if shelf.shots.isEmpty {
                 Text(shelf.accessDenied
                      ? "Autorise l'accès au dossier des captures (Réglages Système → Confidentialité)."
-                     : "Tes 5 dernières captures d'écran s'accrochent ici.")
+                     : "Tes dernières captures d'écran s'accrochent ici.")
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.5))
                     .multilineTextAlignment(.center)
                     .frame(width: size.width - 60)
-                    .offset(x: 30, y: top + 90)
+                    .offset(x: 30, y: notchH + top + 90)
             }
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
+    }
+
+    private func go(to index: Int) {
+        let i = min(max(0, index), shelf.shots.count - 1)
+        withAnimation(.easeInOut(duration: 0.35)) { scroll.first = shelf.shots[i].url }
+    }
+
+    private func chevron(_ symbol: String, _ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 22, height: 22)
+                .background(Circle().fill(Color.black.opacity(0.7)))
+                .overlay(Circle().strokeBorder(.white.opacity(0.3), lineWidth: 0.5))
+                .contentShape(Circle())
+        }
+        .buttonStyle(PressStyle())
     }
 }
 

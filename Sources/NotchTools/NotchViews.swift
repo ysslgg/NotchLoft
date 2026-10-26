@@ -12,7 +12,14 @@ final class NotchUIState: ObservableObject {
 
     /// Page réellement affichée (la musique si l'outil a été désactivé).
     var effectivePage: NotchPage { page.isEnabled ? page : .music }
-    var pageSize: CGSize { effectivePage.size }
+    /// Taille de la page affichée : jamais plus étroite que l'encoche physique + la place des onglets
+    /// de chaque côté, quelle que soit la taille de l'encoche (modèle de Mac, mode d'affichage).
+    var pageSize: CGSize {
+        let base = effectivePage.size
+        let tabsPerWing = (NotchPage.enabled.count + 1) / 2
+        let wing = CGFloat(tabsPerWing) * 22 + 34
+        return CGSize(width: max(base.width, ceil(geometry.notchWidth + 2 * wing)), height: base.height)
+    }
 }
 
 private enum Anim {
@@ -247,7 +254,7 @@ private struct ExpandedContent: View {
             if let img = model.artwork, Settings.shared.blurBackdrop {
                 Image(nsImage: img)
                     .resizable().aspectRatio(contentMode: .fill)
-                    .frame(width: NotchPage.music.size.width, height: 160)
+                    .frame(width: ui.pageSize.width, height: 160)
                     .blur(radius: 34)
                     .saturation(1.3)
                     .opacity(0.34)

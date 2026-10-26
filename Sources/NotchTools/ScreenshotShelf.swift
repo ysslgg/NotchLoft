@@ -14,7 +14,7 @@ final class ScreenshotShelf: ObservableObject {
     @Published private(set) var shots: [Shot] = []
     @Published private(set) var accessDenied = false
 
-    static let capacity = 5
+    static let capacity = 30
 
     private var timer: Timer?
     private var dismissed = Set<URL>()
@@ -95,7 +95,7 @@ final class ScreenshotShelf: ObservableObject {
         guard let cg = CGImageSourceCreateThumbnailAtIndex(src, 0, opts as CFDictionary) else { return nil }
         let img = NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
         thumbs[url] = img
-        if thumbs.count > 20 { thumbs = thumbs.filter { $0.key == url } }
+        if thumbs.count > 60 { thumbs = thumbs.filter { $0.key == url } }
         return img
     }
 }

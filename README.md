@@ -55,7 +55,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 - Les copies de mots de passe (1Password et autres gestionnaires) ne sont jamais enregistrées.
 
 ### 🧷 Étendoir à captures d'écran
-- Tes 5 dernières captures d'écran s'accrochent à une corde à linge, avec leurs pinces.
+- Tes dernières captures d'écran (jusqu'à 30) s'accrochent à une corde à linge, avec leurs pinces ; fais défiler à gauche ou à droite pour voir les autres.
 - Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier l'image, l'afficher dans le Finder ou la mettre à la corbeille.
 
 ### 🎚️ Mixeur audio
