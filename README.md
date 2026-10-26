@@ -21,7 +21,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 <sub>Musique</sub>
 
-<img src="docs/shelf.png" width="460" alt="L'étendoir : les 5 dernières captures d'écran accrochées à une corde à linge">
+<img src="docs/shelf.png" width="460" alt="L'étendoir : les dernières captures d'écran accrochées à une corde à linge">
 
 <sub>Étendoir à captures d'écran</sub>
 
