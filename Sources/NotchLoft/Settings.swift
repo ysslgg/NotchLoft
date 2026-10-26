@@ -77,6 +77,7 @@ final class Settings: ObservableObject {
     @Published var enableClipboard: Bool { didSet { d.set(enableClipboard, forKey: "enableClipboard") } }
     @Published var enableShelf: Bool { didSet { d.set(enableShelf, forKey: "enableShelf") } }
     @Published var enableAudio: Bool { didSet { d.set(enableAudio, forKey: "enableAudio") } }
+    @Published var autoUpdateCheck: Bool { didSet { d.set(autoUpdateCheck, forKey: "autoUpdateCheck") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -111,6 +112,7 @@ final class Settings: ObservableObject {
         enableAudio = bool("enableAudio")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        autoUpdateCheck = bool("autoUpdateCheck")
         accent = AccentChoice(rawValue: d.string(forKey: "accent") ?? "") ?? .auto
         compactWidth = CompactWidth(rawValue: d.string(forKey: "compactWidth") ?? "") ?? .normal
         idleDelay = IdleDelay(rawValue: d.string(forKey: "idleDelay") ?? "") ?? .s45

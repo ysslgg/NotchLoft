@@ -66,7 +66,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 ### Et aussi
 - **Onglets** dans les ailes de l'encoche pour passer d'un outil à l'autre.
-- **Personnalisable** depuis l'icône de la barre des menus : activer ou non chaque outil, visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage.
+- **Personnalisable** depuis l'icône de la barre des menus : activer ou non chaque outil, visualiseur, bague de progression, fond flou, retour haptique, couleur d'accent, largeur au repos, masquage après une pause, lancement au démarrage, vérification des mises à jour.
 - **Discret** : aucune icône dans le Dock.
 - **Pour tous les Mac** : sur un Mac sans encoche, une encoche simulée prend le relais.
 

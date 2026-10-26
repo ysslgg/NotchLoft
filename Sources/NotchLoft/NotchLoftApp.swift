@@ -6,6 +6,7 @@ struct NotchLoftApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     @ObservedObject private var settings = Settings.shared
+    @ObservedObject private var updates = UpdateChecker.shared
 
     var body: some Scene {
         MenuBarExtra {
@@ -33,10 +34,20 @@ struct NotchLoftApp: App {
             Divider()
             Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
             Divider()
+            Button(updates.state == .checking ? "Recherche en cours…" : "Rechercher des mises à jour…") {
+                updates.check(manual: true)
+            }
+            .disabled(updates.state == .checking)
+            if case .available(let version, let url) = updates.state {
+                Button("⬆︎ Télécharger la version \(version)") { NSWorkspace.shared.open(url) }
+            }
+            Toggle("Vérifier automatiquement", isOn: $settings.autoUpdateCheck)
+            Text("Version \(updates.currentVersion)")
+            Divider()
             Button("Quitter NotchLoft") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
         } label: {
-            Image(nsImage: MenuBarIcon.make())
+            Image(nsImage: MenuBarIcon.make(badge: updates.hasUpdate))
         }
     }
 }
@@ -51,6 +62,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         controller = NotchWindowController(model: model, tools: ToolsHub.shared)
         controller?.start()
         ToolsHub.shared.start()
+        UpdateChecker.shared.startAutomaticChecks()
         model.start()
     }
 

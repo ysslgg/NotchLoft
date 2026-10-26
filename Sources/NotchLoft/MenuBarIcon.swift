@@ -2,7 +2,8 @@ import AppKit
 
 /// Version monochrome (template) du logo : encoche avec ses barres au-dessus d'un vinyle.
 enum MenuBarIcon {
-    static func make() -> NSImage {
+    /// `badge` ajoute une pastille quand une mise à jour est disponible.
+    static func make(badge: Bool = false) -> NSImage {
         let image = NSImage(size: NSSize(width: 19, height: 18), flipped: false) { _ in
             NSColor.black.setFill()
             NSColor.black.setStroke()
@@ -52,6 +53,12 @@ enum MenuBarIcon {
             disc.lineWidth = 1.2
             disc.stroke()
             NSBezierPath(ovalIn: NSRect(x: c.x - 1.15, y: c.y - 1.15, width: 2.3, height: 2.3)).fill()
+            if badge {
+                NSGraphicsContext.current?.compositingOperation = .clear
+                NSBezierPath(ovalIn: NSRect(x: 12.2, y: 11.2, width: 7.6, height: 7.6)).fill()
+                NSGraphicsContext.current?.compositingOperation = .sourceOver
+                NSBezierPath(ovalIn: NSRect(x: 13.4, y: 12.4, width: 5.2, height: 5.2)).fill()
+            }
             return true
         }
         image.isTemplate = true
