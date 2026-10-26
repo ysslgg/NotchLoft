@@ -6,7 +6,7 @@
 
 **La boîte à outils cachée dans l'encoche de ton MacBook.**
 
-Musique en cours, presse-papier, étendoir à captures d'écran : survole l'encoche, tout est là.
+Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, batterie et système : survole l'encoche, tout est là.
 
 [![Télécharger NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
@@ -55,6 +55,15 @@ Musique en cours, presse-papier, étendoir à captures d'écran : survole l'enco
 - **Tout y passe** : captures d'écran, **enregistrements d'écran** (avec leur durée), et captures copiées dans le presse-papiers (⌃⇧⌘3 / ⌃⇧⌘4).
 - **Animation** : à chaque nouvelle capture, la miniature s'envole vers l'encoche, qui s'ouvre un instant pour l'accrocher.
 - Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier, afficher dans le Finder ou mettre à la corbeille.
+
+### 📥 Dépôt de fichiers
+- Glisse un fichier ou un dossier sur l'encoche : elle s'ouvre toute seule et il s'accroche à la corde à linge.
+- Reprends-le plus tard par glisser-déposer vers n'importe quelle app. Rien n'est copié ni déplacé, ce sont des raccourcis vers tes fichiers.
+- Clic pour ouvrir, croix pour retirer, clic droit pour l'afficher dans le Finder ou copier son chemin.
+
+### 🔋 Batterie et système
+- Niveau, état de charge, temps restant, santé et cycles de la batterie, plus processeur, mémoire et disque.
+- **Tu choisis ce qui s'affiche en grand** : clique sur une jauge pour la mettre en avant (ou utilise le menu ♪). Le processeur y ajoute sa courbe en direct.
 
 ### Et aussi
 - **Onglets** dans les ailes de l'encoche pour passer d'un outil à l'autre.

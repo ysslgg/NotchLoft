@@ -77,6 +77,10 @@ final class Settings: ObservableObject {
     @Published var enableClipboard: Bool { didSet { d.set(enableClipboard, forKey: "enableClipboard") } }
     @Published var enableShelf: Bool { didSet { d.set(enableShelf, forKey: "enableShelf") } }
     @Published var autoUpdateCheck: Bool { didSet { d.set(autoUpdateCheck, forKey: "autoUpdateCheck") } }
+    @Published var enableFiles: Bool { didSet { d.set(enableFiles, forKey: "enableFiles") } }
+    @Published var enableSystem: Bool { didSet { d.set(enableSystem, forKey: "enableSystem") } }
+    /// Info système affichée en grand : battery, cpu, memory ou disk.
+    @Published var systemHero: String { didSet { d.set(systemHero, forKey: "systemHero") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -95,7 +99,7 @@ final class Settings: ObservableObject {
         }
     }
 
-    var hasTools: Bool { enableClipboard || enableShelf }
+    var hasTools: Bool { enableClipboard || enableShelf || enableFiles || enableSystem }
 
     var compactSide: CGFloat { compactWidth.side }
 
@@ -110,6 +114,9 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        systemHero = d.string(forKey: "systemHero") ?? "battery"
+        enableFiles = bool("enableFiles")
+        enableSystem = bool("enableSystem")
         autoUpdateCheck = bool("autoUpdateCheck")
         accent = AccentChoice(rawValue: d.string(forKey: "accent") ?? "") ?? .auto
         compactWidth = CompactWidth(rawValue: d.string(forKey: "compactWidth") ?? "") ?? .normal

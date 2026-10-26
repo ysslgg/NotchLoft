@@ -372,7 +372,7 @@ private struct HangingShot: View {
 }
 
 /// Pince à linge.
-private struct Peg: View {
+struct Peg: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 2, style: .continuous)
             .fill(LinearGradient(colors: [Color(white: 0.95), Color(white: 0.72)], startPoint: .top, endPoint: .bottom))

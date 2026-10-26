@@ -75,6 +75,10 @@ struct NotchRootView: View {
                         .transition(.opacity)
                     case .clipboard:
                         ClipboardPage(store: tools.clipboard, ui: ui, accent: model.accent).transition(.opacity)
+                    case .files:
+                        FilesPage(tray: tools.tray, ui: ui, accent: model.accent).transition(.opacity)
+                    case .system:
+                        SystemPage(monitor: tools.system, ui: ui, accent: model.accent).transition(.opacity)
                     case .shelf:
                         ShelfPage(shelf: tools.shelf, ui: ui, accent: model.accent).transition(.opacity)
                     }

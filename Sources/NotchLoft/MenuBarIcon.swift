@@ -47,12 +47,25 @@ enum MenuBarIcon {
             }
             NSGraphicsContext.current?.compositingOperation = .sourceOver
 
-            // Vinyle
-            let c = NSPoint(x: 9.5, y: 6.6)
-            let disc = NSBezierPath(ovalIn: NSRect(x: c.x - 4, y: c.y - 4, width: 8, height: 8))
-            disc.lineWidth = 1.2
-            disc.stroke()
-            NSBezierPath(ovalIn: NSRect(x: c.x - 1.15, y: c.y - 1.15, width: 2.3, height: 2.3)).fill()
+            // Corde à linge avec trois objets : une note, un vinyle, une capture
+            let ropeY: CGFloat = 9.4
+            let rope = NSBezierPath()
+            rope.move(to: NSPoint(x: 4.2, y: ropeY + 0.4))
+            rope.curve(to: NSPoint(x: 14.8, y: ropeY + 0.4),
+                       controlPoint1: NSPoint(x: 7.5, y: ropeY - 0.9), controlPoint2: NSPoint(x: 11.5, y: ropeY - 0.9))
+            rope.lineWidth = 0.9
+            rope.lineCapStyle = .round
+            rope.stroke()
+            // note (rectangle)
+            NSBezierPath(roundedRect: NSRect(x: 4.5, y: 4.4, width: 3.2, height: 4.6), xRadius: 0.8, yRadius: 0.8).fill()
+            // vinyle (disque)
+            NSBezierPath(ovalIn: NSRect(x: 7.85, y: 4.9, width: 3.5, height: 3.5)).fill()
+            // capture (rectangle)
+            NSBezierPath(roundedRect: NSRect(x: 11.5, y: 4.4, width: 3.2, height: 4.6), xRadius: 0.8, yRadius: 0.8).fill()
+            // pinces
+            for x in [6.1, 9.6, 13.1] as [CGFloat] {
+                NSBezierPath(roundedRect: NSRect(x: x - 0.5, y: 8.2, width: 1.0, height: 2.4), xRadius: 0.4, yRadius: 0.4).fill()
+            }
             if badge {
                 NSGraphicsContext.current?.compositingOperation = .clear
                 NSBezierPath(ovalIn: NSRect(x: 12.2, y: 11.2, width: 7.6, height: 7.6)).fill()

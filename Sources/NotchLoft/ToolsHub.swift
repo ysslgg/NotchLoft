@@ -7,6 +7,8 @@ final class ToolsHub {
 
     let clipboard = ClipboardStore()
     let shelf = ScreenshotShelf()
+    let tray = FileTray()
+    let system = SystemMonitor()
 
     private var observer: AnyCancellable?
     private var current: (Bool, Bool) = (false, false)

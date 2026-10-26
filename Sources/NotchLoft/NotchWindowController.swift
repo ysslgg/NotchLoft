@@ -94,6 +94,13 @@ final class NotchWindowController {
         model.isShown || (Settings.shared.hasTools && Settings.shared.openWhenIdle)
     }
 
+    /// Un fichier est en cours de glissement (bouton enfoncé + fichiers sur le presse-papiers de glisser).
+    private var isFileDrag: Bool {
+        guard Settings.shared.enableFiles, NSEvent.pressedMouseButtons & 1 != 0 else { return false }
+        return NSPasteboard(name: .drag).canReadObject(forClasses: [NSURL.self],
+                                                       options: [.urlReadingFileURLsOnly: true])
+    }
+
     private func hitRect(expanded: Bool) -> NSRect? {
         guard let screen else { return nil }
         let g = ui.geometry
@@ -140,7 +147,8 @@ final class NotchWindowController {
             let m = NSEvent.mouseLocation
             MouseHub.shared.location = CGPoint(x: m.x - panel.frame.minX, y: panel.frame.maxY - m.y)
         }
-        guard canExpand else {
+        let fileDrag = isFileDrag
+        guard canExpand || fileDrag else {
             if ui.expanded { schedule(open: false, delay: 0.24) } else { cancelPending() }
             return
         }
@@ -150,6 +158,8 @@ final class NotchWindowController {
         if !inside && ui.expanded && (ui.isScrubbing || NSEvent.pressedMouseButtons != 0) { inside = true }
         // La fenêtre ne capte la souris que sur l'encoche ouverte, jamais autour.
         panel.ignoresMouseEvents = !(ui.expanded && inside)
+        // Un fichier qu'on traîne jusqu'à l'encoche ouvre le dépôt.
+        if fileDrag, inside, ui.expanded, ui.effectivePage != .files, ui.effectivePage != .shelf { ui.page = .files }
         if inside == ui.expanded {
             cancelPending()
         } else {
@@ -178,7 +188,9 @@ final class NotchWindowController {
         pending = nil
         pendingTarget = nil
         guard ui.expanded != value else { return }
-        if value, !model.isShown, ui.effectivePage == .music,
+        if value, isFileDrag {
+            ui.page = .files
+        } else if value, !model.isShown, ui.effectivePage == .music,
            let tool = NotchPage.enabled.first(where: { $0 != .music }) {
             ui.page = tool
         }

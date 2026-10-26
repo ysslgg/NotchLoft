@@ -17,10 +17,15 @@ struct NotchLoftApp: App {
             Divider()
             Toggle("Outil : presse-papier", isOn: $settings.enableClipboard)
             Toggle("Outil : étendoir à captures", isOn: $settings.enableShelf)
+            Toggle("Outil : dépôt de fichiers", isOn: $settings.enableFiles)
+            Toggle("Outil : batterie et système", isOn: $settings.enableSystem)
             Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
             Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
             Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
             Divider()
+            Picker("Info système en grand", selection: $settings.systemHero) {
+                ForEach(SystemMetric.allCases) { Text($0.title).tag($0.rawValue) }
+            }
             Picker("Couleur d'accent", selection: $settings.accent) {
                 ForEach(AccentChoice.allCases) { Text($0.label).tag($0) }
             }
