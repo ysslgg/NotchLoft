@@ -195,7 +195,11 @@ final class NotchWindowController {
         guard ui.expanded != value else { return }
         if value, isFileDrag {
             ui.showTemporarily(.files)
-        } else if value, !model.isShown, ui.effectivePage == .music {
+        } else if value, ui.restoreAfterClose == nil,
+                  let fixed = NotchPage(rawValue: Settings.shared.openPage), fixed.isEnabled {
+            // Page par défaut choisie dans les réglages.
+            ui.page = fixed
+        } else if value, ui.restoreAfterClose == nil, !model.isShown, ui.effectivePage == .music {
             // Rien ne joue : on rouvre le dernier outil utilisé (à défaut, le premier disponible).
             let tools = NotchPage.enabled.filter { $0 != .music }
             if let tool = tools.first(where: { $0 == ui.lastTool }) ?? tools.first { ui.page = tool }

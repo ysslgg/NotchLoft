@@ -85,6 +85,8 @@ final class Settings: ObservableObject {
     @Published var reactiveVisualizer: Bool { didSet { d.set(reactiveVisualizer, forKey: "reactiveVisualizer") } }
     /// Masque l'encoche au repos dans une app en plein écran (elle s'ouvre toujours au survol).
     @Published var hideInFullscreen: Bool { didSet { d.set(hideInFullscreen, forKey: "hideInFullscreen") } }
+    /// Page affichée à l'ouverture : « last » (la dernière utilisée) ou le nom d'une page.
+    @Published var openPage: String { didSet { d.set(openPage, forKey: "openPage") } }
     @Published var animateArrivals: Bool { didSet { d.set(animateArrivals, forKey: "animateArrivals") } }
     @Published var openWhenIdle: Bool { didSet { d.set(openWhenIdle, forKey: "openWhenIdle") } }
     @Published var haptics: Bool { didSet { d.set(haptics, forKey: "haptics") } }
@@ -118,6 +120,7 @@ final class Settings: ObservableObject {
         enableShelf = bool("enableShelf")
         openWhenIdle = bool("openWhenIdle")
         animateArrivals = bool("animateArrivals")
+        openPage = d.string(forKey: "openPage") ?? "last"
         hideInFullscreen = bool("hideInFullscreen")
         reactiveVisualizer = bool("reactiveVisualizer")
         systemHero = d.string(forKey: "systemHero") ?? "battery"

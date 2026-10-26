@@ -10,46 +10,74 @@ struct NotchLoftApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            Toggle("Visualiseur animé", isOn: $settings.showVisualizer)
-            Toggle("Bague de progression", isOn: $settings.showProgressRing)
-            Toggle("Visualiseur réactif au son (autorisation requise)", isOn: $settings.reactiveVisualizer)
-            Toggle("Se masquer dans les apps en plein écran", isOn: $settings.hideInFullscreen)
-            Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
-            Toggle("Retour haptique", isOn: $settings.haptics)
+            Menu {
+                Toggle("Presse-papier", isOn: $settings.enableClipboard)
+                Toggle("Étendoir à captures", isOn: $settings.enableShelf)
+                Toggle("Dépôt de fichiers", isOn: $settings.enableFiles)
+                Toggle("Batterie et système", isOn: $settings.enableSystem)
+                Divider()
+                Picker("Info système en grand", selection: $settings.systemHero) {
+                    ForEach(SystemMetric.allCases) { Text($0.title).tag($0.rawValue) }
+                }
+                Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
+                Button("Réessayer l'accès au dossier des captures") { ToolsHub.shared.shelf.retryAccess() }
+            } label: {
+                Label("Outils", systemImage: "square.grid.2x2")
+            }
+
+            Menu {
+                Picker("Page à l'ouverture", selection: $settings.openPage) {
+                    Text("Dernière utilisée").tag("last")
+                    ForEach(NotchPage.enabled) { Text($0.title).tag($0.rawValue) }
+                }
+                Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
+                Toggle("Se masquer dans les apps en plein écran", isOn: $settings.hideInFullscreen)
+                Picker("Masquer après une pause", selection: $settings.idleDelay) {
+                    ForEach(IdleDelay.allCases) { Text($0.label).tag($0) }
+                }
+            } label: {
+                Label("Ouverture et affichage", systemImage: "rectangle.topthird.inset.filled")
+            }
+
+            Menu {
+                Picker("Couleur d'accent", selection: $settings.accent) {
+                    ForEach(AccentChoice.allCases) { Text($0.label).tag($0) }
+                }
+                Picker("Largeur au repos", selection: $settings.compactWidth) {
+                    ForEach(CompactWidth.allCases) { Text($0.label).tag($0) }
+                }
+                Divider()
+                Toggle("Visualiseur animé", isOn: $settings.showVisualizer)
+                Toggle("Visualiseur réactif au son (autorisation requise)", isOn: $settings.reactiveVisualizer)
+                Toggle("Bague de progression", isOn: $settings.showProgressRing)
+                Toggle("Fond flou de la pochette", isOn: $settings.blurBackdrop)
+            } label: {
+                Label("Apparence et musique", systemImage: "paintpalette")
+            }
+
+            Menu {
+                Toggle("Retour haptique", isOn: $settings.haptics)
+                Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
+                Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
+            } label: {
+                Label("Comportement", systemImage: "gearshape")
+            }
+
             Divider()
-            Toggle("Outil : presse-papier", isOn: $settings.enableClipboard)
-            Toggle("Outil : étendoir à captures", isOn: $settings.enableShelf)
-            Toggle("Outil : dépôt de fichiers", isOn: $settings.enableFiles)
-            Toggle("Outil : batterie et système", isOn: $settings.enableSystem)
-            Button("Réessayer l'accès au dossier des captures") { ToolsHub.shared.shelf.retryAccess() }
-            Toggle("Animer l'arrivée des captures", isOn: $settings.animateArrivals)
-            Toggle("Ouvrir les outils quand rien ne joue", isOn: $settings.openWhenIdle)
-            Button("Vider le presse-papier") { ToolsHub.shared.clipboard.clearUnpinned() }
-            Divider()
-            Picker("Info système en grand", selection: $settings.systemHero) {
-                ForEach(SystemMetric.allCases) { Text($0.title).tag($0.rawValue) }
-            }
-            Picker("Couleur d'accent", selection: $settings.accent) {
-                ForEach(AccentChoice.allCases) { Text($0.label).tag($0) }
-            }
-            Picker("Largeur au repos", selection: $settings.compactWidth) {
-                ForEach(CompactWidth.allCases) { Text($0.label).tag($0) }
-            }
-            Picker("Masquer après une pause", selection: $settings.idleDelay) {
-                ForEach(IdleDelay.allCases) { Text($0.label).tag($0) }
-            }
-            Divider()
-            Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
-            Divider()
-            Button(updates.state == .checking ? "Recherche en cours…" : "Rechercher des mises à jour…") {
-                updates.check(manual: true)
-            }
-            .disabled(updates.state == .checking)
+
             if case .available(let version, let url) = updates.state {
                 Button("⬆︎ Télécharger la version \(version)") { NSWorkspace.shared.open(url) }
             }
-            Toggle("Vérifier automatiquement", isOn: $settings.autoUpdateCheck)
-            Text("Version \(updates.currentVersion)")
+            Menu {
+                Button(updates.state == .checking ? "Recherche en cours…" : "Rechercher des mises à jour…") {
+                    updates.check(manual: true)
+                }
+                .disabled(updates.state == .checking)
+                Toggle("Vérifier automatiquement", isOn: $settings.autoUpdateCheck)
+            } label: {
+                Label("Version \(updates.currentVersion)", systemImage: "arrow.triangle.2.circlepath")
+            }
+
             Divider()
             Button("Quitter NotchLoft") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
