@@ -38,9 +38,9 @@ enum CompactWidth: String, CaseIterable, Identifiable {
     }
     var side: CGFloat {
         switch self {
-        case .narrow: 32
-        case .normal: 40
-        case .wide: 52
+        case .narrow: 38
+        case .normal: 46
+        case .wide: 58
         }
     }
 }

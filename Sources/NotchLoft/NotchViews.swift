@@ -152,11 +152,12 @@ private struct CompactContent: View {
                 if let icon = model.sourceIcon {
                     Image(nsImage: icon)
                         .resizable()
-                        .frame(width: 11, height: 11)
-                        .clipShape(RoundedRectangle(cornerRadius: 2.5, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 2.5, style: .continuous).strokeBorder(.black, lineWidth: 1))
-                        .offset(x: 2, y: 3)
-                        .opacity(model.isPlaying ? 1 : 0.6)
+                        .frame(width: 15, height: 15)
+                        .clipShape(RoundedRectangle(cornerRadius: 3.5, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 3.5, style: .continuous).strokeBorder(.black, lineWidth: 1.4))
+                        .shadow(color: .black.opacity(0.6), radius: 2)
+                        .offset(x: 4, y: 4)
+                        .opacity(model.isPlaying ? 1 : 0.85)
                 }
             }
             .frame(width: 24, height: 24)
@@ -477,8 +478,8 @@ private struct SourceButton: View {
         Button(action: action) {
             Image(nsImage: icon)
                 .resizable()
-                .frame(width: 20, height: 20)
-                .opacity(hover.on ? 1 : 0.65)
+                .frame(width: 30, height: 30)
+                .opacity(hover.on ? 1 : 0.92)
                 .scaleEffect(hover.on ? 1.12 : 1)
         }
         .buttonStyle(PressStyle())
