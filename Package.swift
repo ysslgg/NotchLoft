@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "NotchTools",
+    name: "NotchLoft",
     platforms: [.macOS(.v14)],
     targets: [
         .executableTarget(
-            name: "NotchTools",
-            path: "Sources/NotchTools"
+            name: "NotchLoft",
+            path: "Sources/NotchLoft"
         )
     ]
 )

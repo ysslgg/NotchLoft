@@ -89,7 +89,7 @@ final class Settings: ObservableObject {
             do {
                 if launchAtLogin { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
             } catch {
-                NSLog("NotchTools: lancement au démarrage impossible: \(error)")
+                NSLog("NotchLoft: lancement au démarrage impossible: \(error)")
                 launchAtLogin = SMAppService.mainApp.status == .enabled
             }
         }

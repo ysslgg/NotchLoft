@@ -38,7 +38,7 @@ final class ScreenshotShelf: ObservableObject {
     private var thumbs: [URL: Thumb] = [:]
     private var lastPasteCount = NSPasteboard.general.changeCount
     private var ignoredPasteCount = -1
-    private let queue = DispatchQueue(label: "notchtools.shelf", qos: .utility)
+    private let queue = DispatchQueue(label: "notchloft.shelf", qos: .utility)
 
     private static let prefixes = [
         "screenshot", "screen shot", "capture d", "bildschirmfoto", "captura de pantalla", "schermata", "cleanshot",
@@ -52,7 +52,7 @@ final class ScreenshotShelf: ObservableObject {
     private static let videoExtensions: Set<String> = ["mov", "mp4", "m4v"]
 
     static func directory() -> URL {
-        if let o = ProcessInfo.processInfo.environment["NOTCHTOOLS_SHELF_DIR"], !o.isEmpty {
+        if let o = ProcessInfo.processInfo.environment["NOTCHLOFT_SHELF_DIR"], !o.isEmpty {
             return URL(fileURLWithPath: o)
         }
         if let loc = UserDefaults(suiteName: "com.apple.screencapture")?.string(forKey: "location") {
@@ -64,7 +64,7 @@ final class ScreenshotShelf: ObservableObject {
     /// Captures copiées dans le presse-papiers (sans fichier) : on les enregistre ici pour pouvoir les accrocher.
     static let captureDirectory: URL = {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("NotchTools/Captures", isDirectory: true)
+            .appendingPathComponent("NotchLoft/Captures", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }()

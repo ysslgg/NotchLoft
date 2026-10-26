@@ -1,17 +1,17 @@
 <div align="center">
 
-<img src="Resources/AppIcon-1024.png" width="128" alt="Icône de NotchTools">
+<img src="Resources/AppIcon-1024.png" width="128" alt="Icône de NotchLoft">
 
-# NotchTools
+# NotchLoft
 
 **La boîte à outils cachée dans l'encoche de ton MacBook.**
 
 Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : survole l'encoche, tout est là.
 
-[![Télécharger NotchTools](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchTools.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchTools/releases/latest/download/NotchTools.dmg)
+[![Télécharger NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
-![Dernière version](https://img.shields.io/github/v/release/ysslgg/NotchTools?color=8A2BE2&label=version)
-![Téléchargements](https://img.shields.io/github/downloads/ysslgg/NotchTools/total?color=ec4899&label=t%C3%A9l%C3%A9chargements)
+![Dernière version](https://img.shields.io/github/v/release/ysslgg/NotchLoft?color=8A2BE2&label=version)
+![Téléchargements](https://img.shields.io/github/downloads/ysslgg/NotchLoft/total?color=ec4899&label=t%C3%A9l%C3%A9chargements)
 ![macOS 14+](https://img.shields.io/badge/macOS-14%2B-444?logo=apple&logoColor=white)
 ![Apple Silicon et Intel](https://img.shields.io/badge/Apple%20Silicon%20%2B%20Intel-444)
 
@@ -72,9 +72,9 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 
 ## Installation
 
-1. Télécharge **NotchTools.dmg** avec le bouton ci-dessus.
-2. Ouvre le DMG et glisse **NotchTools** dans **Applications**.
-3. Au premier lancement, macOS affiche un avertissement car l'app n'est pas notarisée. Ouvre **Réglages Système → Confidentialité et sécurité**, descends jusqu'à NotchTools et clique sur **Ouvrir quand même**.
+1. Télécharge **NotchLoft.dmg** avec le bouton ci-dessus.
+2. Ouvre le DMG et glisse **NotchLoft** dans **Applications**.
+3. Au premier lancement, macOS affiche un avertissement car l'app n'est pas notarisée. Ouvre **Réglages Système → Confidentialité et sécurité**, descends jusqu'à NotchLoft et clique sur **Ouvrir quand même**.
 4. Pour l'étendoir, autorise l'accès au dossier des captures (Bureau par défaut) quand macOS te le demande.
 
 ## Limites

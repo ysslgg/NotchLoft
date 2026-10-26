@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Crée dist/NotchTools.dmg (create-dmg, avec repli sur un DMG simple).
+# Crée dist/NotchLoft.dmg (create-dmg, avec repli sur un DMG simple).
 set -euo pipefail
 cd "$(dirname "$0")/.."
-APP="dist/NotchTools.app"
-DMG="dist/NotchTools.dmg"
+APP="dist/NotchLoft.app"
+DMG="dist/NotchLoft.dmg"
 [ -d "$APP" ] || { echo "Lance d'abord ./build.sh"; exit 1; }
 rm -f "$DMG"
 
@@ -16,14 +16,14 @@ STAGE="$TMP/stage"; mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
 
 if command -v create-dmg >/dev/null && create-dmg \
-    --volname "NotchTools" \
+    --volname "NotchLoft" \
     --volicon "Resources/AppIcon.icns" \
     --background "$TMP/background.tiff" \
     --window-pos 200 120 \
     --window-size 660 400 \
     --icon-size 110 \
-    --icon "NotchTools.app" 170 200 \
-    --hide-extension "NotchTools.app" \
+    --icon "NotchLoft.app" 170 200 \
+    --hide-extension "NotchLoft.app" \
     --app-drop-link 490 200 \
     --no-internet-enable \
     "$DMG" "$STAGE"; then
@@ -32,7 +32,7 @@ else
     echo "⚠︎ create-dmg a échoué : DMG simple"
     rm -f "$DMG"
     ln -s /Applications "$STAGE/Applications"
-    hdiutil create -volname "NotchTools" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
+    hdiutil create -volname "NotchLoft" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
     echo "✓ $DMG (simple)"
 fi
 rm -rf "$TMP"

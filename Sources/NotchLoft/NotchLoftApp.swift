@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct NotchToolsApp: App {
+struct NotchLoftApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     @ObservedObject private var settings = Settings.shared
@@ -33,7 +33,7 @@ struct NotchToolsApp: App {
             Divider()
             Toggle("Lancer au démarrage", isOn: $settings.launchAtLogin)
             Divider()
-            Button("Quitter NotchTools") { NSApp.terminate(nil) }
+            Button("Quitter NotchLoft") { NSApp.terminate(nil) }
                 .keyboardShortcut("q")
         } label: {
             Image(nsImage: MenuBarIcon.make())

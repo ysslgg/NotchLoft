@@ -20,7 +20,7 @@ struct TrackSnapshot {
 final class NowPlayingService: @unchecked Sendable {
     var onUpdate: ((TrackSnapshot?) -> Void)?
 
-    private let io = DispatchQueue(label: "notchtools.nowplaying")
+    private let io = DispatchQueue(label: "notchloft.nowplaying")
     private var process: Process?
     private var buffer = Data()
     private var payload: [String: Any] = [:]
@@ -60,7 +60,7 @@ final class NowPlayingService: @unchecked Sendable {
 
     private func launch() {
         guard let paths = Self.locate() else {
-            NSLog("NotchTools: adaptateur MediaRemote introuvable")
+            NSLog("NotchLoft: adaptateur MediaRemote introuvable")
             return
         }
         let p = Process()
@@ -87,7 +87,7 @@ final class NowPlayingService: @unchecked Sendable {
             try p.run()
             process = p
         } catch {
-            NSLog("NotchTools: impossible de lancer perl: \(error)")
+            NSLog("NotchLoft: impossible de lancer perl: \(error)")
         }
     }
 
