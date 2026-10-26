@@ -344,6 +344,11 @@ private struct HangingShot: View {
         return f
     }()
 
+    private static func clock(_ t: Double) -> String {
+        let s = Int(t.rounded())
+        return String(format: "%d:%02d", s / 60, s % 60)
+    }
+
     var body: some View {
         VStack(spacing: 3) {
             ZStack(alignment: .top) {
@@ -356,6 +361,19 @@ private struct HangingShot: View {
                     .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(.white.opacity(0.18), lineWidth: 0.5))
                     .shadow(color: .black.opacity(0.5), radius: hover.on ? 8 : 4, y: 2)
                     .padding(.top, 7)
+                    .overlay(alignment: .bottomLeading) {
+                        if shot.isVideo {
+                            HStack(spacing: 3) {
+                                Image(systemName: "play.fill").font(.system(size: 7, weight: .bold))
+                                Text(Self.clock(shot.duration)).font(.system(size: 9, weight: .semibold).monospacedDigit())
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 5)
+                            .frame(height: 15)
+                            .background(Capsule().fill(Color.black.opacity(0.7)))
+                            .padding(5)
+                        }
+                    }
                 Peg()
             }
             .overlay(alignment: .topTrailing) {
@@ -390,6 +408,7 @@ private struct HangingShot: View {
                 if let img = NSImage(contentsOf: shot.url) {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.writeObjects([img])
+                    shelf.ignoreCurrentPasteboard()
                 }
             }
             Button("Afficher dans le Finder") { NSWorkspace.shared.activateFileViewerSelecting([shot.url]) }

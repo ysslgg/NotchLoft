@@ -55,8 +55,10 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 - Les copies de mots de passe (1Password et autres gestionnaires) ne sont jamais enregistrées.
 
 ### 🧷 Étendoir à captures d'écran
-- Tes dernières captures d'écran (jusqu'à 30) s'accrochent à une corde à linge, avec leurs pinces ; fais défiler à gauche ou à droite pour voir les autres.
-- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier l'image, l'afficher dans le Finder ou la mettre à la corbeille.
+- Tes dernières captures (jusqu'à 30) s'accrochent à une corde à linge, avec leurs pinces. Fais défiler à gauche ou à droite pour voir les autres.
+- **Tout y passe** : captures d'écran, **enregistrements d'écran** (avec leur durée), et captures copiées dans le presse-papiers (⌃⇧⌘3 / ⌃⇧⌘4).
+- **Animation** : à chaque nouvelle capture, la miniature s'envole vers l'encoche, qui s'ouvre un instant pour l'accrocher.
+- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier, afficher dans le Finder ou mettre à la corbeille.
 
 ### 🎚️ Mixeur audio
 - Volume et sourdine de la sortie, volume du micro.
@@ -78,6 +80,7 @@ Musique en cours, presse-papier, étendoir à captures d'écran, mixeur audio : 
 ## Limites
 
 - Le presse-papier ne garde que le texte, pas les images ni les fichiers.
+- L'étendoir ne voit pas les captures envoyées directement vers une app (Mail, Messages…) : elles n'existent ni en fichier ni dans le presse-papiers.
 - Le mixeur règle le volume global, pas celui de chaque app (macOS ne le permet pas sans pilote audio).
 - Le visualiseur est purement décoratif : il ne capte pas le son.
 - L'app n'est pas notarisée par Apple, d'où l'avertissement au premier lancement.

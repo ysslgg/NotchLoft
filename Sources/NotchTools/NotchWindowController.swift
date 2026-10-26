@@ -22,8 +22,13 @@ final class NotchWindowController {
     private var pendingTarget: Bool?
     private var settingsObserver: AnyCancellable?
 
+    private let tools: ToolsHub
+    private let animator = ArrivalAnimator()
+    private var peekUntil = Date.distantPast
+
     init(model: NowPlayingModel, tools: ToolsHub) {
         self.model = model
+        self.tools = tools
         panel = NotchPanel(
             contentRect: NSRect(origin: .zero, size: NotchGeometry.panelSize),
             styleMask: [.borderless, .nonactivatingPanel],
@@ -48,6 +53,9 @@ final class NotchWindowController {
 
     func start() {
         reposition()
+        tools.shelf.arrivalHandler = { [weak self] shot in
+            MainActor.assumeIsolated { self?.celebrate(shot) }
+        }
         settingsObserver = Settings.shared.objectWillChange.sink { [weak self] _ in
             DispatchQueue.main.async { MainActor.assumeIsolated { self?.reposition() } }
         }
@@ -100,7 +108,34 @@ final class NotchWindowController {
                       width: size.width, height: size.height)
     }
 
+    // MARK: Arrivée d'une capture
+
+    /// La miniature vole vers l'encoche, qui s'ouvre sur l'étendoir un instant pour l'accrocher.
+    private func celebrate(_ shot: Shot) {
+        guard let screen, NotchPage.shelf.isEnabled else {
+            tools.shelf.release(shot.url)
+            return
+        }
+        let target = CGPoint(x: screen.frame.midX, y: screen.frame.maxY - ui.geometry.notchHeight / 2)
+        animator.fly(image: shot.image, screen: screen, target: target) { [weak self] in
+            guard let self else { return }
+            self.peekShelf()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { self.tools.shelf.release(shot.url) }
+        }
+    }
+
+    private func peekShelf() {
+        ui.page = .shelf
+        peekUntil = Date().addingTimeInterval(3.2)
+        cancelPending()
+        setExpanded(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.3) { [weak self] in
+            MainActor.assumeIsolated { self?.mouseChanged() }
+        }
+    }
+
     private func mouseChanged() {
+        guard Date() >= peekUntil else { return }
         if ui.expanded {
             let m = NSEvent.mouseLocation
             MouseHub.shared.location = CGPoint(x: m.x - panel.frame.minX, y: panel.frame.maxY - m.y)
