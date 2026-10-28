@@ -53,6 +53,7 @@ final class NotchWindowController {
 
     func start() {
         reposition()
+        dragBaseline = NSPasteboard(name: .drag).changeCount
         tools.shelf.arrivalHandler = { [weak self] shot in
             MainActor.assumeIsolated { self?.celebrate(shot) }
         }
@@ -100,10 +101,19 @@ final class NotchWindowController {
     }
 
     /// Un fichier est en cours de glissement (bouton enfoncé + fichiers sur le presse-papiers de glisser).
+    /// macOS garde le contenu du dernier glisser-déposer après la fin du geste : un simple clic ne doit
+    /// donc pas passer pour un glissement. Un vrai glissement de fichier modifie le presse-papiers de
+    /// glisser (`changeCount`) après que le bouton a été enfoncé ; on compare à la valeur notée avant.
+    private var dragBaseline = NSPasteboard(name: .drag).changeCount
+
     private var isFileDrag: Bool {
-        guard Settings.shared.enableFiles, NSEvent.pressedMouseButtons & 1 != 0 else { return false }
-        return NSPasteboard(name: .drag).canReadObject(forClasses: [NSURL.self],
-                                                       options: [.urlReadingFileURLsOnly: true])
+        let pb = NSPasteboard(name: .drag)
+        guard NSEvent.pressedMouseButtons & 1 != 0 else {
+            dragBaseline = pb.changeCount
+            return false
+        }
+        guard Settings.shared.enableFiles, pb.changeCount != dragBaseline else { return false }
+        return pb.canReadObject(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true])
     }
 
     private func hitRect(expanded: Bool) -> NSRect? {
