@@ -35,6 +35,10 @@ Now playing, clipboard history, a screenshot shelf, a file tray, a file converte
 
 <sub>File tray</sub>
 
+<img src="docs/converter.png" width="460" alt="The file converter: pick a format, with a description on hover">
+
+<sub>File converter</sub>
+
 <img src="docs/system.png" width="420" alt="Battery and system: battery level, CPU, memory and disk">
 
 <sub>Battery & system</sub>

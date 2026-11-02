@@ -35,6 +35,10 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, con
 
 <sub>Dépôt de fichiers</sub>
 
+<img src="docs/fr/converter.png" width="460" alt="Le convertisseur de fichiers : choix du format, avec description au survol">
+
+<sub>Convertisseur de fichiers</sub>
+
 <img src="docs/fr/system.png" width="420" alt="Batterie et système : niveau de batterie, processeur, mémoire et disque">
 
 <sub>Batterie et système</sub>
