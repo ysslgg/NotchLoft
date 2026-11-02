@@ -81,7 +81,7 @@ struct NotchLoftApp: App {
 
             Divider()
             Picker(tr("Language"), selection: $settings.language) {
-                ForEach(AppLanguage.allCases) { Text($0.label).tag($0.rawValue) }
+                ForEach(AppLanguage.allCases) { Text($0.label).tag($0) }
             }
             Divider()
             Button(tr("Quit NotchLoft")) { NSApp.terminate(nil) }
