@@ -8,7 +8,7 @@
 
 **La boîte à outils cachée dans l'encoche de ton MacBook.**
 
-Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, batterie et système : survole l'encoche, tout est là.
+Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, convertisseur de fichiers, batterie et système : survole l'encoche, tout est là.
 
 [![Télécharger NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20T%C3%A9l%C3%A9charger-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
