@@ -67,6 +67,11 @@ final class NotchWindowController {
         ) { [weak self] _ in
             MainActor.assumeIsolated { self?.reposition() }
         }
+        // Pendant un vrai glisser-déposer, macOS ne livre plus d'événements de souris aux autres apps :
+        // on surveille donc la position du curseur par sondage tant que le bouton reste enfoncé.
+        if let m = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown], handler: { [weak self] _ in
+            MainActor.assumeIsolated { self?.startDragPolling() }
+        }) { monitors.append(m) }
         let mask: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .leftMouseUp]
         if let m = NSEvent.addGlobalMonitorForEvents(matching: mask, handler: { [weak self] _ in
             MainActor.assumeIsolated { self?.mouseChanged() }
@@ -112,7 +117,7 @@ final class NotchWindowController {
             dragBaseline = pb.changeCount
             return false
         }
-        guard Settings.shared.enableFiles, pb.changeCount != dragBaseline else { return false }
+        guard Settings.shared.enableFiles || Settings.shared.enableConverter, pb.changeCount != dragBaseline else { return false }
         return pb.canReadObject(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true])
     }
 
@@ -156,6 +161,46 @@ final class NotchWindowController {
         }
     }
 
+    /// Page affichée quand un fichier est glissé : le choix « étendoir / convertir » si les deux outils sont actifs.
+    private var dragPage: NotchPage? {
+        let s = Settings.shared
+        if s.enableFiles { return .files }
+        if s.enableConverter { return .convert }
+        return nil
+    }
+
+    private var clearDragWork: DispatchWorkItem?
+    private var dragPoll: Timer?
+
+    private func startDragPolling() {
+        guard dragPoll == nil, Settings.shared.enableFiles || Settings.shared.enableConverter else { return }
+        let t = Timer(timeInterval: 0.04, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if NSEvent.pressedMouseButtons & 1 == 0 {
+                    self.dragPoll?.invalidate(); self.dragPoll = nil
+                }
+                self.mouseChanged()
+            }
+        }
+        RunLoop.main.add(t, forMode: .common)
+        dragPoll = t
+    }
+
+    private func trackFileDrag(_ active: Bool) {
+        if active {
+            clearDragWork?.cancel(); clearDragWork = nil
+            if !ui.fileDragActive { ui.fileDragActive = true }
+        } else if ui.fileDragActive, clearDragWork == nil, NSEvent.pressedMouseButtons & 1 == 0 {
+            // Délai : laisse le temps au dépôt d'être traité avant de retirer les zones de dépôt.
+            let w = DispatchWorkItem { [weak self] in
+                MainActor.assumeIsolated { self?.ui.fileDragActive = false; self?.clearDragWork = nil }
+            }
+            clearDragWork = w
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: w)
+        }
+    }
+
     private func mouseChanged() {
         guard Date() >= peekUntil else { return }
         if ui.expanded {
@@ -163,6 +208,7 @@ final class NotchWindowController {
             MouseHub.shared.location = CGPoint(x: m.x - panel.frame.minX, y: panel.frame.maxY - m.y)
         }
         let fileDrag = isFileDrag
+        trackFileDrag(fileDrag)
         guard canExpand || fileDrag else {
             if ui.expanded { schedule(open: false, delay: 0.24) } else { cancelPending() }
             return
@@ -174,7 +220,7 @@ final class NotchWindowController {
         // La fenêtre ne capte la souris que sur l'encoche ouverte, jamais autour.
         panel.ignoresMouseEvents = !(ui.expanded && inside)
         // Un fichier qu'on traîne jusqu'à l'encoche ouvre le dépôt.
-        if fileDrag, inside, ui.expanded, ui.effectivePage != .files, ui.effectivePage != .shelf { ui.showTemporarily(.files) }
+        if fileDrag, inside, ui.expanded, let p = dragPage, ui.effectivePage != p { ui.showTemporarily(p) }
         if inside == ui.expanded {
             cancelPending()
         } else {
@@ -203,8 +249,8 @@ final class NotchWindowController {
         pending = nil
         pendingTarget = nil
         guard ui.expanded != value else { return }
-        if value, isFileDrag {
-            ui.showTemporarily(.files)
+        if value, isFileDrag, let p = dragPage {
+            ui.showTemporarily(p)
         } else if value, ui.restoreAfterClose == nil,
                   let fixed = NotchPage(rawValue: Settings.shared.openPage), fixed.isEnabled {
             // Page par défaut choisie dans les réglages.

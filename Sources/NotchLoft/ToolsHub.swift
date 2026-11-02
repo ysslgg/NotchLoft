@@ -2,12 +2,14 @@ import Combine
 import Foundation
 
 /// Regroupe les outils et active/désactive leur surveillance selon les réglages.
+@MainActor
 final class ToolsHub {
     static let shared = ToolsHub()
 
     let clipboard = ClipboardStore()
     let shelf = ScreenshotShelf()
     let tray = FileTray()
+    let converter = ConverterModel()
     let system = SystemMonitor()
 
     private var observer: AnyCancellable?

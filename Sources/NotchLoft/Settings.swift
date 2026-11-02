@@ -78,6 +78,7 @@ final class Settings: ObservableObject {
     @Published var enableShelf: Bool { didSet { d.set(enableShelf, forKey: "enableShelf") } }
     @Published var autoUpdateCheck: Bool { didSet { d.set(autoUpdateCheck, forKey: "autoUpdateCheck") } }
     @Published var enableFiles: Bool { didSet { d.set(enableFiles, forKey: "enableFiles") } }
+    @Published var enableConverter: Bool { didSet { d.set(enableConverter, forKey: "enableConverter") } }
     @Published var enableSystem: Bool { didSet { d.set(enableSystem, forKey: "enableSystem") } }
     /// Info système affichée en grand : battery, cpu, memory ou disk.
     @Published var systemHero: String { didSet { d.set(systemHero, forKey: "systemHero") } }
@@ -107,7 +108,7 @@ final class Settings: ObservableObject {
         }
     }
 
-    var hasTools: Bool { enableClipboard || enableShelf || enableFiles || enableSystem }
+    var hasTools: Bool { enableClipboard || enableShelf || enableFiles || enableConverter || enableSystem }
 
     var compactSide: CGFloat { compactWidth.side }
 
@@ -129,6 +130,7 @@ final class Settings: ObservableObject {
         systemHero = d.string(forKey: "systemHero") ?? "battery"
         enableFiles = bool("enableFiles")
         enableSystem = bool("enableSystem")
+        enableConverter = bool("enableConverter")
         autoUpdateCheck = bool("autoUpdateCheck")
         accent = AccentChoice(rawValue: d.string(forKey: "accent") ?? "") ?? .auto
         compactWidth = CompactWidth(rawValue: d.string(forKey: "compactWidth") ?? "") ?? .normal

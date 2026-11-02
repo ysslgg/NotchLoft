@@ -14,6 +14,7 @@ struct NotchLoftApp: App {
                 Toggle(tr("Clipboard"), isOn: $settings.enableClipboard)
                 Toggle(tr("Screenshot shelf"), isOn: $settings.enableShelf)
                 Toggle(tr("File tray"), isOn: $settings.enableFiles)
+                Toggle(tr("File converter"), isOn: $settings.enableConverter)
                 Toggle(tr("Battery & system"), isOn: $settings.enableSystem)
                 Divider()
                 Picker(tr("Featured system info"), selection: $settings.systemHero) {

@@ -71,6 +71,19 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, bat
 - Reprends-le plus tard par glisser-déposer vers n'importe quelle app. Rien n'est copié ni déplacé, ce sont des raccourcis vers tes fichiers.
 - Clic pour ouvrir, croix pour retirer, clic droit pour l'afficher dans le Finder ou copier son chemin.
 
+### 🔄 Convertisseur de fichiers
+- Dépose un fichier (ou plusieurs) sur l'encoche, choisis le format voulu, c'est fait : le résultat arrive à côté de l'original, sans jamais rien écraser.
+- **Survole un format pour savoir ce que c'est** (qualité, poids, compatibilité) avant de choisir.
+- **Images** (PNG, JPEG, HEIC, TIFF, GIF, BMP, JPEG 2000, AVIF, WebP*, ICO, ICNS…) → autres images, PDF, ou texte (OCR). Les RAW d'appareil photo et les PSD se lisent aussi.
+- **PDF** → une image par page, texte, ou OCR pour les scans ; plusieurs PDF peuvent être fusionnés.
+- **Audio** (WAV, AIFF, MP3, M4A, FLAC, OGG…) → M4A, M4A sans perte, WAV, AIFF, CAF, FLAC, AAC (+ MP3, OPUS, OGG, WMA, AC3 avec ffmpeg).
+- **Vidéo** (MP4, MOV, MKV, AVI, WebM…) → MP4 1080p / 720p / 480p, HEVC, MOV, M4V, GIF animé, une image en PNG/JPEG, ou juste le son (+ MKV, AVI, WebM, WMV, FLV, MPEG-2 avec ffmpeg). Un GIF animé peut devenir un MP4.
+- **Documents** (DOCX, DOC, ODT, RTF, HTML, TXT, Markdown…) → entre eux, plus PDF ; le Markdown est mis en forme en HTML.
+- **Données** (JSON, plist, CSV, TSV) → entre elles, plus YAML, tableaux Markdown ou HTML.
+- **Archives et dossiers** → ZIP, TAR, TAR.GZ, TAR.BZ2, ou extraction ; encodage/décodage Base64 pour tout fichier.
+- Quand tu glisses un fichier vers l'encoche, deux zones apparaissent : **l'accrocher au dépôt** ou **le convertir**. Tout se fait sur ton Mac, rien n'est envoyé en ligne.
+- <sub>*Des formats en plus (MP3, OGG, OPUS, WebM, MKV, sortie WebP…) apparaissent automatiquement si [ffmpeg](https://ffmpeg.org) est installé (`brew install ffmpeg`).</sub>
+
 ### 🔋 Batterie et système
 - Niveau, état de charge, temps restant, santé et cycles de la batterie, plus processeur, mémoire et disque.
 - **Tu choisis ce qui s'affiche en grand** : clique sur une jauge pour la mettre en avant (ou utilise le menu ♪). Le processeur y ajoute sa courbe en direct.

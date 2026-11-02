@@ -8,7 +8,7 @@
 
 **The toolbox hidden in your MacBook's notch.**
 
-Now playing, clipboard history, a screenshot shelf, a file tray, battery and system stats: hover the notch and everything is there.
+Now playing, clipboard history, a screenshot shelf, a file tray, a file converter, battery and system stats: hover the notch and everything is there.
 
 [![Download NotchLoft](https://img.shields.io/badge/%E2%AC%87%EF%B8%8E%20Download-NotchLoft.dmg-8A2BE2?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/ysslgg/NotchLoft/releases/latest/download/NotchLoft.dmg)
 
@@ -70,6 +70,19 @@ Now playing, clipboard history, a screenshot shelf, a file tray, battery and sys
 - Drag a file or folder onto the notch: it opens by itself and the item hangs on the clothesline.
 - Take it back later by dragging it into any app. Nothing is copied or moved: these are shortcuts to your files.
 - Click to open, cross to remove, right-click to show in Finder or copy its path.
+
+### 🔄 File converter
+- Drop a file (or several) on the notch, pick the format you want, done: the result lands next to the original, never overwriting anything.
+- **Hover a format to see what it is** (quality, size, compatibility) before you choose.
+- **Images** (PNG, JPEG, HEIC, TIFF, GIF, BMP, JPEG 2000, AVIF, WebP*, ICO, ICNS…) → other images, PDF, or text (OCR). Camera RAW and PSD files can be read too.
+- **PDF** → one image per page, text, or OCR for scans; several PDFs can be merged.
+- **Audio** (WAV, AIFF, MP3, M4A, FLAC, OGG…) → M4A, lossless M4A, WAV, AIFF, CAF, FLAC, AAC (+ MP3, OPUS, OGG, WMA, AC3 with ffmpeg).
+- **Video** (MP4, MOV, MKV, AVI, WebM…) → MP4 1080p / 720p / 480p, HEVC, MOV, M4V, animated GIF, a frame as PNG/JPEG, or just the sound (+ MKV, AVI, WebM, WMV, FLV, MPEG-2 with ffmpeg). An animated GIF can become an MP4.
+- **Documents** (DOCX, DOC, ODT, RTF, HTML, TXT, Markdown…) → each other, plus PDF; Markdown is rendered to HTML.
+- **Data** (JSON, plist, CSV, TSV) → each other, plus YAML, Markdown or HTML tables.
+- **Archives and folders** → ZIP, TAR, TAR.GZ, TAR.BZ2, or extract; Base64 encode/decode for any file.
+- When you drag a file onto the notch, two zones appear: **hang it in the tray** or **convert it**. Everything runs on your Mac, nothing is uploaded.
+- <sub>*Extra formats (MP3, OGG, OPUS, WebM, MKV, WebP output…) appear automatically if [ffmpeg](https://ffmpeg.org) is installed (`brew install ffmpeg`).</sub>
 
 ### 🔋 Battery & system
 - Battery level, charging state, time remaining, health and cycles, plus CPU, memory and disk.

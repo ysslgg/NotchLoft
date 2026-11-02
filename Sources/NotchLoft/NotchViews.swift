@@ -5,6 +5,8 @@ final class NotchUIState: ObservableObject {
     @Published var expanded = false
     @Published var isScrubbing = false
     @Published var scrubFraction: Double?
+    /// Un fichier est en train d'être glissé vers l'encoche : propose « Étendoir » ou « Convertir ».
+    @Published var fileDragActive = false
     @Published var geometry = NotchGeometry(notchWidth: 185, notchHeight: 32, hasHardwareNotch: false)
     @Published var page: NotchPage = NotchPage(rawValue: UserDefaults.standard.string(forKey: "lastPage") ?? "") ?? .music {
         didSet { UserDefaults.standard.set(page.rawValue, forKey: "lastPage") }
@@ -87,6 +89,9 @@ struct NotchRootView: View {
                     .animation(.easeOut(duration: 0.2), value: musicShown)
 
                 ZStack(alignment: .top) {
+                    if ui.fileDragActive && settings.enableFiles && settings.enableConverter {
+                        DropChooser(tray: tools.tray, converter: tools.converter, ui: ui, accent: model.accent).transition(.opacity)
+                    } else {
                     switch ui.effectivePage {
                     case .music:
                         Group {
@@ -101,10 +106,13 @@ struct NotchRootView: View {
                         ClipboardPage(store: tools.clipboard, ui: ui, accent: model.accent).transition(.opacity)
                     case .files:
                         FilesPage(tray: tools.tray, ui: ui, accent: model.accent).transition(.opacity)
+                    case .convert:
+                        ConverterPage(model: tools.converter, ui: ui, accent: model.accent).transition(.opacity)
                     case .system:
                         SystemPage(monitor: tools.system, ui: ui, accent: model.accent).transition(.opacity)
                     case .shelf:
                         ShelfPage(shelf: tools.shelf, ui: ui, accent: model.accent).transition(.opacity)
+                    }
                     }
                 }
                 .frame(width: ui.pageSize.width, height: ui.pageSize.height, alignment: .top)
