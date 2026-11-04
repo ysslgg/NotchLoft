@@ -82,6 +82,8 @@ enum Localization {
         "Launch at login": "Lancer au démarrage",
         "Memory": "Mémoire",
         "Move to Trash": "Mettre à la corbeille",
+        "Move to Trash (also removes it from your Desktop)": "Mettre à la corbeille (le retire aussi du Bureau)",
+        "Remove from shelf only": "Retirer de l'étendoir seulement",
         "Music": "Musique",
         "Narrow": "Étroite",
         "Never": "Jamais",

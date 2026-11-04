@@ -68,7 +68,7 @@ Now playing, clipboard history, a screenshot shelf, a file tray, a file converte
 - Your latest captures (up to 30) hang on a clothesline with clothespins. Scroll left or right to see the others.
 - **Everything goes in**: screenshots, **screen recordings** (with their duration), and captures copied to the clipboard (⌃⇧⌘3 / ⌃⇧⌘4).
 - **Animation**: each new capture flies to the notch, which opens for a moment to hang it up.
-- Click to open, **drag and drop** into any app, a **cross** on hover to remove a capture from the shelf (the file stays untouched), right-click to copy, show in Finder or move to the Trash.
+- Click to open, **drag and drop** into any app, a **cross** on hover that moves the capture to the Trash (so it disappears from your Desktop too, and you can still recover it from the Trash), right-click to copy, show in Finder, or remove it from the shelf only (the file stays untouched).
 
 ### 📥 File tray
 - Drag a file or folder onto the notch: it opens by itself and the item hangs on the clothesline.

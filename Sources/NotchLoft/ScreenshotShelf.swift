@@ -141,6 +141,22 @@ final class ScreenshotShelf: ObservableObject {
 
     // MARK: Liste
 
+    /// Met le fichier à la corbeille (récupérable) et le retire de l'étendoir, y compris du Bureau.
+    func trash(_ shot: Shot) {
+        let url = shot.url
+        // On retire tout de suite l'élément de l'étendoir ; si la corbeille échoue, il reste visible.
+        dismissed.insert(url)
+        latest.removeAll { $0 == shot }
+        publish()
+        NSWorkspace.shared.recycle([url]) { [weak self] _, error in
+            DispatchQueue.main.async {
+                guard let self, error != nil else { return }
+                self.dismissed.remove(url)
+                self.scan()
+            }
+        }
+    }
+
     func dismiss(_ shot: Shot) {
         dismissed.insert(shot.url)
         latest.removeAll { $0 == shot }
@@ -212,6 +228,10 @@ final class ScreenshotShelf: ObservableObject {
             ? result.filter { !known.contains($0.url) && -$0.date.timeIntervalSinceNow < 30 }
             : []
         known.formUnion(result.map(\.url))
+        // Aide aux tests : NOTCHLOFT_TRASH_FIRST=1 met la première capture à la corbeille au premier balayage.
+        if !firstScanDone, ProcessInfo.processInfo.environment["NOTCHLOFT_TRASH_FIRST"] == "1", let first = result.first {
+            trash(first)
+        }
         firstScanDone = true
         latest = result
         if Settings.shared.animateArrivals, let handler = arrivalHandler, let newest = fresh.max(by: { $0.date < $1.date }) {

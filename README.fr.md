@@ -68,7 +68,7 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, con
 - Tes dernières captures (jusqu'à 30) s'accrochent à une corde à linge, avec leurs pinces. Fais défiler à gauche ou à droite pour voir les autres.
 - **Tout y passe** : captures d'écran, **enregistrements d'écran** (avec leur durée), et captures copiées dans le presse-papiers (⌃⇧⌘3 / ⌃⇧⌘4).
 - **Animation** : à chaque nouvelle capture, la miniature s'envole vers l'encoche, qui s'ouvre un instant pour l'accrocher.
-- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol pour retirer une capture de l'étendoir (le fichier reste intact), clic droit pour copier, afficher dans le Finder ou mettre à la corbeille.
+- Clic pour ouvrir, **glisse-dépose** vers n'importe quelle app, **croix** au survol qui met la capture à la corbeille (elle disparaît donc aussi du Bureau, et tu peux la récupérer dans la corbeille), clic droit pour copier, afficher dans le Finder, ou la retirer de l'étendoir seulement (le fichier reste intact).
 
 ### 📥 Dépôt de fichiers
 - Glisse un fichier ou un dossier sur l'encoche : elle s'ouvre toute seule et il s'accroche à la corde à linge.

@@ -325,7 +325,7 @@ private struct HangingShot: View {
             }
             .overlay(alignment: .topTrailing) {
                 if hover.on {
-                    Button { shelf.dismiss(shot) } label: {
+                    Button { shelf.trash(shot) } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 8, weight: .heavy))
                             .foregroundStyle(.white)
@@ -337,7 +337,7 @@ private struct HangingShot: View {
                     .buttonStyle(PressStyle())
                     .offset(x: -4, y: 11)
                     .transition(.scale(scale: 0.5).combined(with: .opacity))
-                    .help(tr("Remove from shelf"))
+                    .help(tr("Move to Trash (also removes it from your Desktop)"))
                 }
             }
             Text(Self.relative(shot.date))
@@ -362,10 +362,8 @@ private struct HangingShot: View {
                 }
             }
             Button(tr("Show in Finder")) { NSWorkspace.shared.activateFileViewerSelecting([shot.url]) }
-            Button(tr("Remove from shelf")) { shelf.dismiss(shot) }
-            Button(tr("Move to Trash")) {
-                NSWorkspace.shared.recycle([shot.url]) { _, _ in DispatchQueue.main.async { shelf.dismiss(shot) } }
-            }
+            Button(tr("Move to Trash")) { shelf.trash(shot) }
+            Button(tr("Remove from shelf only")) { shelf.dismiss(shot) }
         }
         .help(tr("Click: open · Drag: drop elsewhere"))
     }
