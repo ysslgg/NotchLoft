@@ -20,6 +20,9 @@ final class SystemMonitor: ObservableObject {
         var battery = BatteryInfo()
         var cpu: Double = 0
         var memoryUsed: Double = 0
+        /// Pression mémoire comme dans le Moniteur d'activité : 0...1 (part de mémoire non disponible) et niveau 1/2/4.
+        var pressure: Double = 0
+        var pressureLevel = 1
         var memoryTotalGB: Double = 0
         var memoryUsedGB: Double = 0
         var diskUsed: Double = 0
@@ -34,6 +37,8 @@ final class SystemMonitor: ObservableObject {
     var battery: BatteryInfo { stats.battery }
     var cpu: Double { stats.cpu }
     var memoryUsed: Double { stats.memoryUsed }
+    var pressure: Double { stats.pressure }
+    var pressureLevel: Int { stats.pressureLevel }
     var memoryTotalGB: Double { stats.memoryTotalGB }
     var memoryUsedGB: Double { stats.memoryUsedGB }
     var diskUsed: Double { stats.diskUsed }
@@ -166,6 +171,17 @@ final class SystemMonitor: ObservableObject {
         n.memoryTotalGB = total / 1_073_741_824
         n.memoryUsedGB = ((used / 1_073_741_824) * 10).rounded() / 10
         n.memoryUsed = (Swift.min(1, used / total) * 100).rounded() / 100
+        // Mêmes sources que `memory_pressure` : pourcentage de mémoire disponible et niveau d'alerte du noyau.
+        if let level = Self.sysctlInt("kern.memorystatus_level") {
+            n.pressure = Double(Swift.max(0, Swift.min(100, 100 - level))) / 100
+        }
+        n.pressureLevel = Self.sysctlInt("kern.memorystatus_vm_pressure_level") ?? 1
+    }
+
+    private static func sysctlInt(_ name: String) -> Int? {
+        var v: Int32 = 0
+        var size = MemoryLayout<Int32>.size
+        return sysctlbyname(name, &v, &size, nil, 0) == 0 ? Int(v) : nil
     }
 
     private func readDisk(into n: inout Stats) {

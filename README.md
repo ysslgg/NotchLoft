@@ -89,7 +89,7 @@ Now playing, clipboard history, a screenshot shelf, a file tray, a file converte
 - <sub>*Extra formats (MP3, OGG, OPUS, WebM, MKV, WebP output…) appear automatically if [ffmpeg](https://ffmpeg.org) is installed (`brew install ffmpeg`).</sub>
 
 ### 🔋 Battery & system
-- Battery level, charging state, time remaining, health and cycles, plus CPU, memory and disk.
+- Battery level, charging state, time remaining, health and cycles, plus CPU, memory, **memory pressure** (normal / elevated / critical, like Activity Monitor) and disk.
 - **You choose what is shown large**: click a gauge to bring it forward (or use the ♪ menu). The CPU adds a live graph.
 
 ### And also

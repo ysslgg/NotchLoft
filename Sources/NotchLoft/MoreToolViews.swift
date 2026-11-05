@@ -188,13 +188,14 @@ private struct FileCard: View {
 // MARK: - Batterie et système
 
 enum SystemMetric: String, CaseIterable, Identifiable {
-    case battery, cpu, memory, disk
+    case battery, cpu, memory, pressure, disk
     var id: String { rawValue }
     var title: String {
         switch self {
         case .battery: tr("Battery")
         case .cpu: tr("CPU")
         case .memory: tr("Memory")
+        case .pressure: tr("Memory pressure")
         case .disk: tr("Disk")
         }
     }
@@ -252,6 +253,7 @@ struct SystemPage: View {
         case .battery: return Double(monitor.battery.percent) / 100
         case .cpu: return monitor.cpu
         case .memory: return monitor.memoryUsed
+        case .pressure: return monitor.pressure
         case .disk: return monitor.diskUsed
         }
     }
@@ -261,12 +263,31 @@ struct SystemPage: View {
         case .battery: return monitor.battery.isCharging ? tr("Charging") : (monitor.battery.isPluggedIn ? tr("Plugged in") : tr("On battery"))
         case .cpu: return String(format: "%.0f %%", monitor.cpu * 100)
         case .memory: return tr("%.1f / %.0f GB", monitor.memoryUsedGB, monitor.memoryTotalGB)
+        case .pressure: return pressureName
         case .disk: return tr("%.0f GB free", monitor.diskFreeGB)
+        }
+    }
+
+    /// Niveau donné par macOS : 1 normal (vert), 2 avertissement (orange), 4 critique (rouge).
+    private var pressureName: String {
+        switch monitor.pressureLevel {
+        case 2: return tr("Elevated")
+        case 4: return tr("Critical")
+        default: return tr("Normal")
+        }
+    }
+
+    private var pressureColor: Color {
+        switch monitor.pressureLevel {
+        case 2: return Color(red: 1, green: 0.7, blue: 0.3)
+        case 4: return Color(red: 1, green: 0.4, blue: 0.4)
+        default: return Color(red: 0.35, green: 0.85, blue: 0.5)
         }
     }
 
     private func color(_ m: SystemMetric) -> Color {
         if m == .battery { return batteryColor }
+        if m == .pressure { return pressureColor }
         let v = fraction(m)
         return v > 0.9 ? Color(red: 1, green: 0.4, blue: 0.4) : (v > 0.75 ? Color(red: 1, green: 0.7, blue: 0.3) : accent)
     }
@@ -306,6 +327,14 @@ struct SystemPage: View {
             bigNumber(String(format: "%.0f %%", monitor.memoryUsed * 100),
                       tr("%.1f of %.0f GB used", monitor.memoryUsedGB, monitor.memoryTotalGB),
                       color: color(.memory)) { bar(monitor.memoryUsed, color(.memory)) }
+        case .pressure:
+            bigNumber(pressureName, tr("Memory pressure"), color: pressureColor) {
+                VStack(alignment: .trailing, spacing: 4) {
+                    bar(monitor.pressure, pressureColor)
+                    Text(tr("%.0f%% of memory unavailable", monitor.pressure * 100))
+                        .font(.system(size: 10)).foregroundStyle(.white.opacity(0.45)).lineLimit(1)
+                }
+            }
         case .disk:
             bigNumber(tr("%.0f GB", monitor.diskFreeGB),
                       tr("free of %.0f GB · %.0f%% used", monitor.diskTotalGB, monitor.diskUsed * 100),

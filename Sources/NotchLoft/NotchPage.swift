@@ -36,7 +36,7 @@ enum NotchPage: String, CaseIterable, Identifiable {
         case .shelf: CGSize(width: 530, height: 180)
         case .files: CGSize(width: 480, height: 178)
         case .convert: CGSize(width: 520, height: 296)
-        case .system: CGSize(width: 440, height: 190)
+        case .system: CGSize(width: 480, height: 190)
         }
     }
 

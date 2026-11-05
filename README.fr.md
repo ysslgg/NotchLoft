@@ -89,7 +89,7 @@ Musique en cours, presse-papier, étendoir à captures, dépôt de fichiers, con
 - <sub>*Des formats en plus (MP3, OGG, OPUS, WebM, MKV, sortie WebP…) apparaissent automatiquement si [ffmpeg](https://ffmpeg.org) est installé (`brew install ffmpeg`).</sub>
 
 ### 🔋 Batterie et système
-- Niveau, état de charge, temps restant, santé et cycles de la batterie, plus processeur, mémoire et disque.
+- Niveau, état de charge, temps restant, santé et cycles de la batterie, plus processeur, mémoire, **pression mémoire** (normale / élevée / critique, comme le Moniteur d'activité) et disque.
 - **Tu choisis ce qui s'affiche en grand** : clique sur une jauge pour la mettre en avant (ou utilise le menu ♪). Le processeur y ajoute sa courbe en direct.
 
 ### Et aussi
